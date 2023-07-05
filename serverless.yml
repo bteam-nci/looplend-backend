@@ -16,8 +16,8 @@ package:
     - methods/libs/**         # Include function directories
 
 functions:
-  - ${file(infra\user-functions.yml)}
-#  - ${file(infra\products-functions.yml)}
-#  - ${file(infra\conv-functions.yml)}
-#  - ${file(infra\wishlist-functions.yml)}
-#  - ${file(infra\rentals-functions.yml)}
+  - ${file(infra/user-functions.yml)}
+#  - ${file(infra/products-functions.yml)}
+#  - ${file(infra/conv-functions.yml)}
+#  - ${file(infra/wishlist-functions.yml)}
+#  - ${file(infra/rentals-functions.yml)}
