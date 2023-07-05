@@ -3,7 +3,6 @@ authorizer:
   package:
     patterns:
       - methods/authorizer.js
-
 getUserInfo:
   cors: true
   handler: methods/users.getUserInfo

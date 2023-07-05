@@ -12,5 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.10.14"
+  },
+  "devDependencies": {
+    "serverless": "^3.33.0"
   }
 }
