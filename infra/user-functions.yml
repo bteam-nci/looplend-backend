@@ -6,6 +6,10 @@ authorizer:
       - node_modules/@clerk/**/*
       - node_modules/camelcase-keys/**/*
       - node_modules/cookie/**/*
+      - node_modules/snake-case/**/*
+      - node_modules/dot-case/**/*
+      - node_modules/lower-case/**/*
+      - node_modules/no-case/**/*
       - node_modules/snakecase-keys/**/*
       - node_modules/tslib/**/*
       - node_modules/@peculiar/webcrypto/**/*

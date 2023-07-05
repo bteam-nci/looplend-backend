@@ -27,7 +27,7 @@ function getPackageDependencies(packageName, packageDir) {
 	});
 	// remove duplicate dependencies
 	return [...dependencies, ...subDependencies]
-		.filter((d, i, arr) => !d.startsWith("@types") && arr.indexOf(d) === i)
+		.filter((d, i, arr) => !d.startsWith("@types") )
 	// return [...dependencies, ...subDependencies].filter(d=>!d.startsWith('@types'));
 }
 
