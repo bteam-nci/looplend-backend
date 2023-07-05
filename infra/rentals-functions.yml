@@ -1,31 +1,31 @@
-getRentals:
-  handler: methods/rentals.getRentals
-  events:
-    - http:
-        path: /rentals
-        method: get
-        authorizer: authorizer
-
-createRental:
-  handler: methods/rentals.createRental
-  events:
-    - http:
-        path: /rentals
-        method: post
-        authorizer: authorizer
-
-acceptRental:
-  handler: methods/rentals.acceptRental
-  events:
-    - http:
-        path: /rentals/{rID}/accept
-        method: post
-        authorizer: authorizer
-
-denyRental:
-  handler: methods/rentals.denyRental
-  events:
-    - http:
-        path: /rentals/{rID}
-        method: delete
-        authorizer: authorizer
+#getRentals:
+#  handler: methods/rentals.getRentals
+#  events:
+#    - http:
+#        path: /rentals
+#        method: get
+#        authorizer: authorizer
+#
+#createRental:
+#  handler: methods/rentals.createRental
+#  events:
+#    - http:
+#        path: /rentals
+#        method: post
+#        authorizer: authorizer
+#
+#acceptRental:
+#  handler: methods/rentals.acceptRental
+#  events:
+#    - http:
+#        path: /rentals/{rID}/accept
+#        method: post
+#        authorizer: authorizer
+#
+#denyRental:
+#  handler: methods/rentals.denyRental
+#  events:
+#    - http:
+#        path: /rentals/{rID}
+#        method: delete
+#        authorizer: authorizer

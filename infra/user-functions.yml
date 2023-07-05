@@ -3,8 +3,13 @@ authorizer:
   package:
     patterns:
       - methods/authorizer.js
+      - node_modules/@clerk/**/*
+      - node_modules/camelcase-keys/**/*
+      - node_modules/cookie/**/*
+      - node_modules/snakecase-keys/**/*
+      - node_modules/tslib/**/*
+
 getUserInfo:
-  cors: true
   handler: methods/users.getUserInfo
   package:
     patterns:
@@ -12,6 +17,7 @@ getUserInfo:
   events:
     - http:
         path: /me
+        cors: true
         method: get
         authorizer: authorizer
 

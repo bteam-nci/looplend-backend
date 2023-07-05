@@ -1,39 +1,39 @@
-createProduct:
-  handler: handler.createProduct
-  events:
-    - http:
-        path: /products
-        method: post
-        authorizer: authorizer
-
-editProduct:
-  handler: handler.editProduct
-  events:
-    - http:
-        path: /products/{pID}
-        method: put
-        authorizer: authorizer
-
-deleteProduct:
-  handler: handler.deleteProduct
-  events:
-    - http:
-        path: /products/{pID}
-        method: delete
-        authorizer: authorizer
-
-sendProductFeedback:
-  handler: handler.sendProductFeedback
-  events:
-    - http:
-        path: /products/{pID}/feedbacks
-        method: post
-        authorizer: authorizer
-
-getProducts:
-  handler: handler.getProducts
-  events:
-    - http:
-        path: /products
-        method: get
-        authorizer: authorizer
+#createProduct:
+#  handler: handler.createProduct
+#  events:
+#    - http:
+#        path: /products
+#        method: post
+#        authorizer: authorizer
+#
+#editProduct:
+#  handler: handler.editProduct
+#  events:
+#    - http:
+#        path: /products/{pID}
+#        method: put
+#        authorizer: authorizer
+#
+#deleteProduct:
+#  handler: handler.deleteProduct
+#  events:
+#    - http:
+#        path: /products/{pID}
+#        method: delete
+#        authorizer: authorizer
+#
+#sendProductFeedback:
+#  handler: handler.sendProductFeedback
+#  events:
+#    - http:
+#        path: /products/{pID}/feedbacks
+#        method: post
+#        authorizer: authorizer
+#
+#getProducts:
+#  handler: handler.getProducts
+#  events:
+#    - http:
+#        path: /products
+#        method: get
+#        authorizer: authorizer
