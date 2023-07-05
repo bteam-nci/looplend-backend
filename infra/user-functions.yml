@@ -3,12 +3,34 @@ authorizer:
   package:
     patterns:
       - methods/authorizer.js
-      - node_modules/@clerk/**/*
+      - node_modules/@clerk/backend/**/*
+      - node_modules/@clerk/types/**/*
       - node_modules/camelcase-keys/**/*
       - node_modules/cookie/**/*
       - node_modules/snakecase-keys/**/*
       - node_modules/tslib/**/*
-
+      - node_modules/@peculiar/webcrypto/**/*
+      - node_modules/deepmerge/**/*
+      - node_modules/node-fetch-native/**/*
+      - node_modules/csstype/**/*
+      - node_modules/@peculiar/asn1-schema/**/*
+      - node_modules/@peculiar/json-schema/**/*
+      - node_modules/pvtsutils/**/*
+      - node_modules/webcrypto-core/**/*
+      - node_modules/asn1js/**/*
+      - node_modules/pvutils/**/*
+      - node_modules/map-obj/**/*
+      - node_modules/to-snake-case/**/*
+      - node_modules/to-space-case/**/*
+      - node_modules/to-no-case/**/*
+      - node_modules/form-data/**/*
+      - node_modules/asynckit/**/*
+      - node_modules/combined-stream/**/*
+      - node_modules/mime-types/**/*
+      - node_modules/delayed-stream/**/*
+      - node_modules/mime-db/**/*
+      - node_modules/camelcase/**/*
+      - node_modules/quick-lru/**/*
 getUserInfo:
   handler: methods/users.getUserInfo
   package:

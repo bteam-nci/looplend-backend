@@ -1,55 +1,38 @@
 const fs = require('fs');
 const path = require('path');
 
-function flattenDependencyTree(packageName) {
-	const nodeModulesDir = path.resolve(__dirname, 'node_modules');
-	const packageDir = path.join(nodeModulesDir, packageName);
+function getPackageDependencies(packageName, packageDir) {
+	const packagePath = path.join(packageDir, 'node_modules', packageName);
 
-	if (!fs.existsSync(packageDir)) {
-		console.error(`Package "${packageName}" not found in the dependencies.`);
-		return;
+	if (!fs.existsSync(packagePath)) {
+		throw new Error(`Package '${packageName}' not found.`);
 	}
 
-	const dependencyTree = {};
+	const packageJsonPath = path.join(packagePath, 'package.json');
 
-	function traverseDependencyTree(packageDir, parent) {
-		const packageJsonPath = path.join(packageDir, 'package.json');
-		const packageJson = require(packageJsonPath);
+	if (!fs.existsSync(packageJsonPath)) {
+		throw new Error(`'package.json' not found for '${packageName}'.`);
+	}
 
-		if (packageJson.dependencies) {
-			for (const [dependency, version] of Object.entries(packageJson.dependencies)) {
-				if (!dependency.startsWith('@types')) {
-					const fullDependencyName = parent ? `${parent}/${dependency}` : dependency;
-					dependencyTree[fullDependencyName] = version;
-					const subPackageDir = path.join(nodeModulesDir, dependency);
-					traverseDependencyTree(subPackageDir, fullDependencyName);
-				}
-			}
+	const packageJson = require(packageJsonPath);
+	const dependencies = Object.keys(packageJson.dependencies || {});
+
+	const subDependencies = dependencies.flatMap((dependency) => {
+		try {
+			return getPackageDependencies(dependency, packageDir);
+		} catch (error) {
+			console.error(`Failed to retrieve dependencies for '${dependency}'.`);
+			return [];
 		}
-	}
-
-	traverseDependencyTree(packageDir, null);
-	return dependencyTree;
-}
-function formatDependencyPaths(dependencyTree) {
-	const formattedPaths = {};
-
-	for (const [dependency, version] of Object.entries(dependencyTree)) {
-		const parts = dependency.split('/');
-		const child = parts.pop();
-		const parent = parts.join('/');
-
-		if (!parent || !formattedPaths[parent]) {
-			formattedPaths[dependency] = `\t\t\t- node-modules/${dependency}/**/*`;
-		}
-	}
-
-	return formattedPaths;
-}
-const dependencyTree = flattenDependencyTree("@clerk/clerk-sdk-node");
-const formattedPaths = formatDependencyPaths(dependencyTree);
-
-for (const dependencyPath of Object.values(formattedPaths)) {
-	console.log(dependencyPath);
+	});
+	// remove duplicate dependencies
+	return [...dependencies, ...subDependencies]
+		.filter((d, i, arr) => !d.startsWith("@types") && arr.indexOf(d) === i)
+	// return [...dependencies, ...subDependencies].filter(d=>!d.startsWith('@types'));
 }
 
+// Example usage
+const packageName = "@clerk/clerk-sdk-node";
+const packageDir = __dirname;
+const dependencies = getPackageDependencies(packageName, packageDir);
+console.log(dependencies.map(d=>`\t\t\t\t- node_modules/${d}/**/*`).join('\n'));
