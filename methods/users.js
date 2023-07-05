@@ -1,0 +1,8 @@
+module.exports.getUserInfo = async (event) => {
+	return {
+		statusCode: 200,
+		body: JSON.stringify({
+			message: "Hello world!",
+		})
+	}
+}

@@ -1,0 +1,14 @@
+getUserWishlist:
+  handler: methods/wishlist.getUserWishlist
+  events:
+    - http:
+        path: /me/wishlist
+        method: get
+        authorizer: authorizer
+
+addProductToWishlist:
+  handler: methods/wishlist.addProductToWishlist
+  events:
+    - http:
+        path: /products/{pID}/wishlist
+        method: post

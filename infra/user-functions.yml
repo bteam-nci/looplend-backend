@@ -1,0 +1,39 @@
+authorizer:
+  handler: methods/authorizer.handler
+  package:
+    patterns:
+      - methods/authorizer.js
+
+getUserInfo:
+  cors: true
+  handler: methods/users.getUserInfo
+  package:
+    patterns:
+      - methods/users.js
+  events:
+    - http:
+        path: /me
+        method: get
+        authorizer: authorizer
+
+#sendUserFeedback:
+#  handler: methods/users.sendUserFeedback
+#  package:
+#    patterns:
+#      - methods/users.js
+#  events:
+#    - http:
+#        path: /user/{uID}/feedbacks
+#        method: post
+#        authorizer: authorizer
+#
+#getUserProducts:
+#  handler: methods/users.getUserProducts
+#  package:
+#    patterns:
+#      - methods/users.js
+#  events:
+#    - http:
+#        path: /me/products
+#        method: get
+#        authorizer: authorizer

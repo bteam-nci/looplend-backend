@@ -1,0 +1,23 @@
+getConversations:
+  handler: methods/conv.getConversations
+  events:
+    - http:
+        path: /conversations
+        method: get
+        authorizer: authorizer
+
+getConversationMessages:
+  handler: methods/conv.getConversationMessages
+  events:
+    - http:
+        path: /conversations/{cID}/messages
+        method: get
+        authorizer: authorizer
+
+sendConversationMessage:
+  handler: methods/conv.sendConversationMessage
+  events:
+    - http:
+        path: /conversations/{cID}/messages
+        method: post
+        authorizer: authorizer
