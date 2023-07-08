@@ -11,14 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@clerk/clerk-sdk-node": "^4.10.14",
-    "npm-package-arg": "^10.1.0",
-    "npm-registry-fetch": "^14.0.5"
+    "@clerk/clerk-sdk-node": "^4.10.14"
   },
   "devDependencies": {
-    "get-dependencies": "^1.1.0",
-    "npm-programmatic": "^0.0.12",
-    "package-json": "^8.1.1",
     "serverless": "^3.33.0"
   }
 }
