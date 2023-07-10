@@ -34,7 +34,7 @@ function maskEntity(entity) {
 	if (!fields) {
 		return entity;
 	}
-	const maskedEntity = { ...entity };
+	const maskedEntity = { ...entity.value };
 	for (const field of fields) {
 		maskedEntity[field] = undefined;
 	}

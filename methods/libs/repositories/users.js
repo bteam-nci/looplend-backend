@@ -8,7 +8,7 @@ module.exports.get = async (userId, dbInstance) => {
 module.exports.create = async (user, dbInstance) => {
 	const value = await dbInstance("users").insert(user).onConflict(["id"]).merge().returning("*");
 	return {
-		value: value,
+		value: value[0],
 		_type: "User"
 	}
 }
