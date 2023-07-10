@@ -6,6 +6,10 @@ module.exports.get = async (userId, dbInstance) => {
 }
 
 module.exports.create = async (user, dbInstance) => {
-	return dbInstance("users").insert(user).onConflict(["id"]).merge().returning("*");
+	const value = await dbInstance("users").insert(user).onConflict(["id"]).merge().returning("*");
+	return {
+		value: value,
+		_type: "User"
+	}
 }
 
