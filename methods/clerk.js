@@ -12,7 +12,7 @@ module.exports.clerkWebhook = attachDb(async (event, context) => {
 		try{
 			const user = await users.create({
 				id: payload.data.id,
-				fullName: `${payload.data.firstName} ${payload.data.lastName}`,
+				fullName: `${payload.data.first_name} ${payload.data.last_name}`,
 			}, dbInstance);
 			return apigHelper.returnEntity(user);
 		}catch (e) {

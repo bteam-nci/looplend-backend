@@ -27,8 +27,6 @@ function attachDb(handler) {
 			callback(null, results);
 		} catch (error) {
 			callback(error);
-		}finally {
-			dbInstance.destroy();
 		}
 	};
 }
