@@ -12,21 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.10.14",
-    "better-sqlite3": "^8.4.0",
     "knex": "^2.5.0",
-    "mysql": "^2.18.1",
-    "mysql2": "^3.5.1",
-    "oracledb": "^6.0.2",
     "pg": "^8.11.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.1",
-    "svix": "^1.6.0",
-    "tedious": "^16.2.0"
+    "svix": "^1.6.0"
   },
   "devDependencies": {
     "esbuild": "^0.17.19",
     "serverless": "^3.33.0",
-    "serverless-esbuild": "^1.45.1",
-    "sqlite3": "^5.1.6"
+    "serverless-esbuild": "^1.45.1"
   }
 }

@@ -23,6 +23,16 @@ custom:
     bundle: true
     target: node18
     minify: false
+    external:
+      - pg-query-stream
+      - nock
+      - mock-aws-s3
+      - oracledb
+      - mysql2
+      - mysql
+      - tedious
+      - better-sqlite3
+      - sqlite3
 
 functions:
   - ${file(infra/user-functions.yml)}
