@@ -13,5 +13,3 @@ module.exports.getUserInfo = attachDb(async (event, context) => {
 	}
 	return apigHelper.returnEntity(user);
 });
-
-

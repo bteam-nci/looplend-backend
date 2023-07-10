@@ -9,7 +9,7 @@ getUserInfo:
         method: get
         authorizer: authorizer
 clerkWebhook:
-  handler: methods/users.clerkWebhook
+  handler: methods/clerk.clerkWebhook
   events:
     - http:
         path: /clerk

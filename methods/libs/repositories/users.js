@@ -5,3 +5,7 @@ module.exports.get = async (userId, dbInstance) => {
 	}
 }
 
+module.exports.create = async (user, dbInstance) => {
+	return dbInstance("users").insert(user).onConflict(["id"]).merge().returning("*");
+}
+
