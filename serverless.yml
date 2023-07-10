@@ -1,5 +1,10 @@
 service: looplend-backend
+useDotenv: true
+
 frameworkVersion: '3'
+
+plugins:
+  - serverless-esbuild
 
 provider:
   name: aws
@@ -7,13 +12,17 @@ provider:
   region: eu-west-1
   timeout: 10
   versionFunctions: false
-
+  environment:
+    DB_URL: ${env:DB_URL}
 package:
   excludeDevDependencies: false
   individually: true
-  patterns:
-    - '!**'                # Exclude all files by default
-    - methods/libs/**         # Include function directories
+
+custom:
+  esbuild:
+    bundle: true
+    target: node18
+    minify: false
 
 functions:
   - ${file(infra/user-functions.yml)}

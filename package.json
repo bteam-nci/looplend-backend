@@ -11,9 +11,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@clerk/clerk-sdk-node": "^4.10.14"
+    "@clerk/clerk-sdk-node": "^4.10.14",
+    "knex": "^2.5.0",
+    "pg": "^8.11.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.32.1"
   },
   "devDependencies": {
-    "serverless": "^3.33.0"
+    "esbuild": "^0.17.19",
+    "serverless": "^3.33.0",
+    "serverless-esbuild": "^1.45.1",
+    "sqlite3": "^5.1.6"
   }
 }
