@@ -4,7 +4,7 @@ module.exports.get = async (userId, dbInstance) => {
 	const user = await dbInstance("users").where("id", userId).first();
 	user.products = products;
 	return {
-		value: dbInstance("users").where("id", userId).first(),
+		value: user,
 		_type: "User"
 	}
 }

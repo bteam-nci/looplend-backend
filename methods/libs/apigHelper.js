@@ -37,10 +37,9 @@ const fieldsToMask = {
 	"User": ["createdAt", "products.ownerId"],
 	"Product": ["createdAt", "ownerId", "availabilities.productId"]
 }
-function maskEntity(subject){
-	const fields = fieldsToMask[subject._type];
+function maskEntity(subject, type){
+	const fields = fieldsToMask[type];
 	if (!fields) return subject;
-	delete (subject._type);
 	for (let field of fields){
 		subject = deleteField(subject, field);
 	}
@@ -66,6 +65,7 @@ function deleteField(subject, field) {
 	}
 	return subject;
 }
+
 module.exports.returnList = (list, page, total, statusCode) => {
 	const localList = list.map((entity) => maskEntity(entity));
 	return {
@@ -84,7 +84,7 @@ module.exports.returnList = (list, page, total, statusCode) => {
 
 // this module takes an entity, and it returns a response object with the entity (some of the fields are masked)
 module.exports.returnEntity = (entity, statusCode) => {
-	const localEntity = maskEntity(entity);
+	const localEntity = maskEntity(entity.value, entity._type);
 	return {
 		statusCode: statusCode ?? 200,
 		body: JSON.stringify(localEntity),
