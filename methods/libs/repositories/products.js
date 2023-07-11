@@ -89,7 +89,10 @@ module.exports.list = async (params, dbInstance) => {
 	const total = await query.clone().count("*", { as: "total" }).first();
 	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
-	return [products, parseInt(total.total)];
+	return [products.map(p=>({
+		...p,
+		_type: "Product"
+	})), parseInt(total.total)];
 }
 
 

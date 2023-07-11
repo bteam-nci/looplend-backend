@@ -1,14 +1,25 @@
-#getUserWishlist:
-#  handler: methods/wishlist.getUserWishlist
-#  events:
-#    - http:
-#        path: /me/wishlist
-#        method: get
-#        authorizer: authorizer
-#
-#addProductToWishlist:
-#  handler: methods/wishlist.addProductToWishlist
-#  events:
-#    - http:
-#        path: /products/{pID}/wishlist
-#        method: post
+getUserWishlist:
+  handler: methods/wishlist.list
+  events:
+    - http:
+        path: /me/wishlist
+        cors: true
+        method: get
+        authorizer: authorizer
+
+addProductToWishlist:
+  handler: methods/wishlist.addProduct
+  events:
+    - http:
+        path: /products/{pID}/wishlist
+        method: post
+        cors: true
+        authorizer: authorizer
+removeProductToWishlist:
+  handler: methods/wishlist.removeProduct
+  events:
+    - http:
+        path: /products/{pID}/wishlist
+        method: delete
+        cors: true
+        authorizer: authorizer
