@@ -4,7 +4,7 @@ const apigHelper = require("./libs/apigHelper");
 const {product: validator} = require("./libs/validators");
 
 module.exports.createProduct = attachDb(async (event, context) => {
-	const userId = context.userId;
+	const userId = apigHelper.getUserId(event);
 	const dbInstance = context.dbInstance;
 
 	const productInput = JSON.parse(event.body ?? "{}");
@@ -27,7 +27,7 @@ module.exports.createProduct = attachDb(async (event, context) => {
 });
 
 module.exports.deleteProduct = attachDb(async (event, context) => {
-	const userId = context.userId;
+	const userId = apigHelper.getUserId(event);
 	const dbInstance = context.dbInstance;
 
 	const product = await products.get(event.pathParameters.pID, dbInstance);
@@ -50,7 +50,7 @@ module.exports.deleteProduct = attachDb(async (event, context) => {
 });
 
 module.exports.editProduct = attachDb(async (event, context) => {
-	const userId = context.userId;
+	const userId = apigHelper.getUserId(event);
 	const dbInstance = context.dbInstance;
 
 	const productInput = JSON.parse(event.body ?? "{}");

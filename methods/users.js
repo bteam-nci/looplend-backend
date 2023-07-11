@@ -3,7 +3,7 @@ const apigHelper = require("./libs/apigHelper");
 const users = require("./libs/repositories/users");
 
 module.exports.getUserInfo = attachDb(async (event, context) => {
-	const userId = context.userId;
+	const userId = apigHelper.getUserId(event);
 	const dbInstance = context.dbInstance;
 	const user = await users.get(userId, dbInstance);
 	if(!user) {

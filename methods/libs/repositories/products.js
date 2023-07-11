@@ -11,6 +11,7 @@ module.exports.get = async (productId, dbInstance) => {
 		_type: "Product"
 	}
 }
+
 module.exports.delete = async (productId, dbInstance) => {
 	return dbInstance("products").where("id", productId).del();
 }
@@ -34,6 +35,7 @@ module.exports.create = async (product, dbInstance) => {
 		_type: "Product"
 	}
 }
+
 module.exports.edit = async (product, dbInstance) => {
 	// create the product
 	const value = await dbInstance("products").insert(product).onConflict(["id"]).merge().returning("*");
@@ -86,6 +88,17 @@ module.exports.list = async (params, dbInstance) => {
 		});
 	}
 
+	const total = await query.clone().count("*", { as: "total" }).first();
+	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+
+	return [products.map(p=>({
+		...p,
+		_type: "Product"
+	})), parseInt(total.total)];
+}
+
+module.exports.listUserProducts = async (userId, dbInstance) => {
+	const query = dbInstance("products").where("userId", userId);
 	const total = await query.clone().count("*", { as: "total" }).first();
 	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
