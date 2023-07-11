@@ -1,5 +1,5 @@
 createProduct:
-  handler: methods/users.getUserInfo
+  handler: methods/products.createProduct
   events:
     - http:
         path: /products
@@ -7,21 +7,23 @@ createProduct:
         method: post
         authorizer: authorizer
 
-#editProduct:
-#  handler: handler.editProduct
-#  events:
-#    - http:
-#        path: /products/{pID}
-#        method: put
-#        authorizer: authorizer
-#
-#deleteProduct:
-#  handler: handler.deleteProduct
-#  events:
-#    - http:
-#        path: /products/{pID}
-#        method: delete
-#        authorizer: authorizer
+editProduct:
+  handler: methods/products.editProduct
+  events:
+    - http:
+        path: /products/{pID}
+        method: put
+        cors: true
+        authorizer: authorizer
+
+deleteProduct:
+  handler: methods/products.deleteProduct
+  events:
+    - http:
+        path: /products/{pID}
+        method: delete
+        cors: true
+        authorizer: authorizer
 #
 #sendProductFeedback:
 #  handler: handler.sendProductFeedback
@@ -31,10 +33,11 @@ createProduct:
 #        method: post
 #        authorizer: authorizer
 #
-#getProducts:
-#  handler: handler.getProducts
-#  events:
-#    - http:
-#        path: /products
-#        method: get
-#        authorizer: authorizer
+listProducts:
+  handler: methods/products.listProducts
+  events:
+    - http:
+        path: /products
+        method: get
+        cors: true
+        authorizer: authorizer

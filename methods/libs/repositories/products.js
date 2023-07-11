@@ -1,3 +1,5 @@
+const PAGE_LIMIT = 20;
+
 module.exports.get = async (productId, dbInstance) => {
 	const product = await dbInstance("products").where("id", productId).first();
 	if (!product) {
@@ -8,6 +10,9 @@ module.exports.get = async (productId, dbInstance) => {
 		value: product,
 		_type: "Product"
 	}
+}
+module.exports.delete = async (productId, dbInstance) => {
+	return dbInstance("products").where("id", productId).del();
 }
 
 module.exports.create = async (product, dbInstance) => {
@@ -22,8 +27,69 @@ module.exports.create = async (product, dbInstance) => {
 	});
 	await dbInstance("products_availabilities").insert(availabilities);
 	return {
-		value: value[0],
+		value: {
+			...value[0],
+			availabilities
+		},
 		_type: "Product"
 	}
 }
+module.exports.edit = async (product, dbInstance) => {
+	// create the product
+	const value = await dbInstance("products").insert(product).onConflict(["id"]).merge().returning("*");
+	// insert the availabilities
+	const availabilities = product.availabilities.map((availability) => {
+		return {
+			...availability,
+			productId: product.id
+		}
+	});
+	await Promise.all([
+		dbInstance("products_availabilities").where("productId", product.id).del(),
+		dbInstance("products_availabilities").insert(availabilities)
+	])
+	return {
+		value: {
+			...value[0],
+			availabilities
+		},
+		_type: "Product"
+	}
+}
+
+module.exports.list = async (params, dbInstance) => {
+	const { page, category, priceEnd, dateStart, dateEnd } = params;
+	const query = dbInstance("products").orderBy("created_at", "desc");
+
+	if (category) {
+		query.where("category", category);
+	}
+	// here should user the products_price_index
+	if (priceEnd) {
+		query.where("price", "<=", priceEnd);
+	}
+	// date range needs to check if the date range is NOT within the availabilities and if the date range is not colliding with rentals, the availabilities have start and end dates and also the rentals
+	if (dateStart && dateEnd) {
+		query.whereNotExists(function () {
+			this.select("*").from("products_availabilities").whereRaw("products_availabilities.productId = products.id").andWhere(
+				(qB) => qB
+					.whereBetween("start", [dateStart, dateEnd])
+					.orWhereBetween("end", [dateStart, dateEnd])
+			);
+		});
+		query.whereNotExists(function () {
+			this.select("*").from("rentals").whereRaw("rentals.productId = products.id").andWhere(
+				(qB) => qB
+					.whereBetween("start", [dateStart, dateEnd])
+					.orWhereBetween("end", [dateStart, dateEnd])
+			)
+		});
+	}
+
+	const total = await query.clone().count("id", { as: "total" }).first();
+	const products = await query.clone().limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+
+	return [products, total.total];
+}
+
 

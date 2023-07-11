@@ -34,10 +34,13 @@ module.exports.badRequest = (body) => {
 }
 // a map Entity._type -> [field1, field2, ...]
 const fieldsToMask = {
-	"User": ["createdAt"],
+	"User": ["createdAt", "products.ownerId"],
 	"Product": ["createdAt", "ownerId", "availabilities.productId"]
 }
-function maskEntity(subject, fields){
+function maskEntity(subject){
+	const fields = fieldsToMask[subject._type];
+	if (!fields) return subject;
+	delete (subject._type);
 	for (let field of fields){
 		subject = deleteField(subject, field);
 	}
@@ -63,6 +66,21 @@ function deleteField(subject, field) {
 	}
 	return subject;
 }
+module.exports.returnList = (list, page, total, statusCode) => {
+	const localList = list.map((entity) => maskEntity(entity));
+	return {
+		statusCode: statusCode ?? 200,
+		body: JSON.stringify({
+			data: localList,
+			count: localList.length,
+			page,
+			total
+		}),
+		headers: {
+			...baseHeaders
+		}
+	}
+};
 
 // this module takes an entity, and it returns a response object with the entity (some of the fields are masked)
 module.exports.returnEntity = (entity, statusCode) => {
