@@ -18,11 +18,11 @@ module.exports.clerkWebhook = attachDb(async (event, context) => {
 		}catch (e) {
 			return apigHelper.error({
 				"message": e.message
-			}, 400);
+			}, 500);
 		}
 	}
-	return apigHelper.error({
-		"message": "Webhook type not supported."
-	}, 400);
+	return apigHelper.badRequest({
+		"message": "Invalid webhook"
+	})
 });
 

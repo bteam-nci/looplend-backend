@@ -25,13 +25,3 @@ clerkWebhook:
 #        method: post
 #        authorizer: authorizer
 #
-#getUserProducts:
-#  handler: methods/users.getUserProducts
-#  package:
-#    patterns:
-#      - methods/users.js
-#  events:
-#    - http:
-#        path: /me/products
-#        method: get
-#        authorizer: authorizer

@@ -22,23 +22,46 @@ module.exports.error = (body, statusCode) => {
 		}
 	}
 }
+
+module.exports.badRequest = (body) => {
+	return {
+		statusCode: 400,
+		body: JSON.stringify(body),
+		headers: {
+			...baseHeaders
+		}
+	}
+}
 // a map Entity._type -> [field1, field2, ...]
 const fieldsToMask = {
-	"User": ["createdAt"]
+	"User": ["createdAt"],
+	"Product": ["createdAt", "ownerId", "availabilities.productId"]
 }
-
-function maskEntity(entity) {
-	const type = entity._type;
-	if (!type) throw new Error("Entity type not specified");
-	const fields = fieldsToMask[type];
-	if (!fields) {
-		return entity;
+function maskEntity(subject, fields){
+	for (let field of fields){
+		subject = deleteField(subject, field);
 	}
-	const maskedEntity = { ...entity.value };
-	for (const field of fields) {
-		maskedEntity[field] = undefined;
+	return subject;
+}
+function deleteField(subject, field) {
+	let path = field.split(".");
+	if (Array.isArray(subject)) {
+		subject.forEach((item) => {
+			deleteField(item, field);
+		})
+	} else {
+		Object.keys(subject).forEach((key) => {
+			if (key === path[0]) {
+				if (path.length > 1) {
+					path.shift();
+					deleteField(subject[key], path.join("."));
+				} else {
+					delete subject[key];
+				}
+			}
+		})
 	}
-	return maskedEntity;
+	return subject;
 }
 
 // this module takes an entity, and it returns a response object with the entity (some of the fields are masked)

@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.10.14",
+    "jsonschema": "^1.4.1",
     "knex": "^2.5.0",
     "pg": "^8.11.1",
     "pg-hstore": "^2.3.4",

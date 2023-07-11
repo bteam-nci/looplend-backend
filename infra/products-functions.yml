@@ -1,11 +1,12 @@
-#createProduct:
-#  handler: handler.createProduct
-#  events:
-#    - http:
-#        path: /products
-#        method: post
-#        authorizer: authorizer
-#
+createProduct:
+  handler: methods/users.getUserInfo
+  events:
+    - http:
+        path: /products
+        cors: true
+        method: post
+        authorizer: authorizer
+
 #editProduct:
 #  handler: handler.editProduct
 #  events:
