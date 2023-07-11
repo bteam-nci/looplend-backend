@@ -42,7 +42,7 @@ resources:
         Name: authorizerArn
 functions:
   - ${file(infra/user-functions.yml)}
-#  - ${file(infra/products-functions.yml)}
+  - ${file(infra/products-functions.yml)}
 #  - ${file(infra/conv-functions.yml)}
 #  - ${file(infra/wishlist-functions.yml)}
 #  - ${file(infra/rentals-functions.yml)}
