@@ -59,7 +59,7 @@ module.exports.edit = async (product, dbInstance) => {
 
 module.exports.list = async (params, dbInstance) => {
 	const { page, category, priceEnd, dateStart, dateEnd } = params;
-	const query = dbInstance("products").orderBy("createdAt", "desc");
+	const query = dbInstance("products");
 
 	if (category) {
 		query.where("category", category);
@@ -86,10 +86,10 @@ module.exports.list = async (params, dbInstance) => {
 		});
 	}
 
-	const total = await query.clone().count("id", { as: "total" }).first();
-	const products = await query.clone().limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+	const total = await query.clone().count("*", { as: "total" }).first();
+	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
-	return [products, total.total];
+	return [products, parseInt(total.total)];
 }
 
 
