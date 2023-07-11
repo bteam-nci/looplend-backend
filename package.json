@@ -22,7 +22,6 @@
   "devDependencies": {
     "esbuild": "^0.17.19",
     "serverless": "^3.33.0",
-    "serverless-esbuild": "^1.45.1",
-    "sqlite3": "^5.1.6"
+    "serverless-esbuild": "^1.45.1"
   }
 }
