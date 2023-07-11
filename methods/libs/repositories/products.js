@@ -59,7 +59,7 @@ module.exports.edit = async (product, dbInstance) => {
 
 module.exports.list = async (params, dbInstance) => {
 	const { page, category, priceEnd, dateStart, dateEnd } = params;
-	const query = dbInstance("products").orderBy("created_at", "desc");
+	const query = dbInstance("products").orderBy("createdAt", "desc");
 
 	if (category) {
 		query.where("category", category);
