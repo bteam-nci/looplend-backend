@@ -35,7 +35,8 @@ module.exports.badRequest = (body) => {
 // a map Entity._type -> [field1, field2, ...]
 const fieldsToMask = {
 	"User": ["createdAt", "products.ownerId"],
-	"Product": ["createdAt", "ownerId", "availabilities.productId"]
+	"Product": ["createdAt", "ownerId", "availabilities.productId", "owner.createdAt"],
+	"Rental": ["productId", "borrowerId", "product.createdAt", "product.ownerId", "borrower.createdAt"],
 }
 function maskEntity(subject, type){
 	const fields = fieldsToMask[type];

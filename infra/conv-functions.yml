@@ -4,6 +4,7 @@
 #    - http:
 #        path: /conversations
 #        method: get
+#        cors: true
 #        authorizer: authorizer
 #
 #getConversationMessages:
@@ -12,6 +13,7 @@
 #    - http:
 #        path: /conversations/{cID}/messages
 #        method: get
+#        cors: true
 #        authorizer: authorizer
 #
 #sendConversationMessage:
@@ -20,4 +22,5 @@
 #    - http:
 #        path: /conversations/{cID}/messages
 #        method: post
+#        cors: true
 #        authorizer: authorizer

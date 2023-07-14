@@ -5,6 +5,7 @@ module.exports.get = async (productId, dbInstance) => {
 	if (!product) {
 		return null;
 	}
+	product.owner = await dbInstance("user").where("id", product.ownerId).first();
 	product.availabilities = await dbInstance("products_availabilities").where("productId", productId);
 	return {
 		value: product,
