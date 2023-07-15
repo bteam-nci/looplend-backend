@@ -60,7 +60,7 @@ module.exports.edit = async (product, dbInstance) => {
 	}
 }
 
-module.exports.list = async (params, dbInstance) => {
+module.exports.list = async (params, userId, dbInstance) => {
 	const { page, category, priceEnd, dateStart, dateEnd } = params;
 	const query = dbInstance("products");
 
@@ -91,12 +91,16 @@ module.exports.list = async (params, dbInstance) => {
 
 	const total = await query.clone().count("*", { as: "total" }).first();
 
+	if (userId) {
+		query.leftJoin("wishlist", function () {
+			this.on("wishlist.productId", "=", "products.id").andOn("wishlist.userId", "=", userId);
+		})
+		.select("wishlist.id as wishlistId");
+	}
+
 	const products = await query.clone()
 		// include the wishlist info
-		.leftJoin("wishlist", function () {
-			this.on("wishlist.productId", "=", "products.id").andOn("wishlist.userId", "=", userId)
-		})
-		.select("products.*", "wishlist.addedAt as wishlistDate")
+		.select("products.*")
 		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p=>({

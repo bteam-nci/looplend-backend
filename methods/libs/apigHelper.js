@@ -96,7 +96,5 @@ module.exports.returnEntity = (entity, statusCode) => {
 };
 
 module.exports.getUserId = (event) => {
-	const userId = event.requestContext?.authorizer?.userId;
-	if (!userId) throw new Error("Unauthorized");
-	return userId;
+	return event.requestContext?.authorizer?.userId;
 }

@@ -85,6 +85,7 @@ module.exports.editProduct = attachDb(async (event, context) => {
 });
 
 module.exports.listProducts = attachDb(async (event, context) => {
+	const userId = apigHelper.getUserId(event);
 	const dbInstance = context.dbInstance;
 	const {page, category, priceEnd, dateStart, dateEnd} = event.queryStringParameters ?? {};
 	if (page && isNaN(page)) {
@@ -108,7 +109,7 @@ module.exports.listProducts = attachDb(async (event, context) => {
 		priceEnd: priceEnd ?? null,
 		dateStart: dateStart ?? null,
 		dateEnd: dateEnd ?? null
-	}, dbInstance);
+	}, userId, dbInstance);
 
 	return apigHelper.returnList(productsList, page, total);
 });
