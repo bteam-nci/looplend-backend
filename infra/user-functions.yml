@@ -8,6 +8,14 @@ getUserInfo:
         cors: true
         method: get
         authorizer: authorizer
+getRentalRequests:
+  handler: methods/users.getUserInfo
+  events:
+    - http:
+        path: /me/requests
+        cors: true
+        method: get
+        authorizer: authorizer
 clerkWebhook:
   handler: methods/clerk.clerkWebhook
   events:

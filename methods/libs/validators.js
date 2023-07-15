@@ -44,8 +44,28 @@ const schemas = {
 			}
 		},
 		required: ["name", "price"]
+	},
+	"rental": {
+		type: "object",
+		properties: {
+			productId: {
+				type: "integer"
+			},
+			start: {
+				type: "string",
+				format: "date"
+			},
+			end: {
+				type: "string",
+				format: "date"
+			},
+		},
+		required: ["productId", "start", "end"]
 	}
 }
 module.exports.product =  (product) => {
+	return validate(product, schemas.product).valid;
+}
+module.exports.rental =  (product) => {
 	return validate(product, schemas.product).valid;
 }

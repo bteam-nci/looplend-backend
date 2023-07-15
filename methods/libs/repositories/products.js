@@ -93,7 +93,7 @@ module.exports.list = async (params, dbInstance) => {
 	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p=>({
-		...p,
+		value: p,
 		_type: "Product"
 	})), parseInt(total.total)];
 }
@@ -104,7 +104,7 @@ module.exports.listUserProducts = async (userId, dbInstance) => {
 	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p=>({
-		...p,
+		value: p,
 		_type: "Product"
 	})), parseInt(total.total)];
 }
