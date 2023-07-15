@@ -9,7 +9,7 @@ getUserInfo:
         method: get
         authorizer: authorizer
 getRentalRequests:
-  handler: methods/users.getUserInfo
+  handler: methods/users.getUserRequests
   events:
     - http:
         path: /me/requests
