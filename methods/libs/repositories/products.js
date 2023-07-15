@@ -92,9 +92,9 @@ module.exports.list = async (params, userId, dbInstance) => {
 	const total = await query.clone().count("*", { as: "total" }).first();
 
 	if (userId) {
-		query.leftJoin("wishlist", function () {
-			this.on("wishlist.productId", "=", "products.id").andOn("wishlist.userId", "=", userId);
-		}).select("products.*", "wishlist.addedAt as wishlistDate");
+		query.leftJoin("users_wishlists", function () {
+			this.on("users_wishlists.productId", "=", "products.id").andOn("users_wishlists.userId", "=", dbInstance.raw("?", [userId]));
+		}).select("products.*", "users_wishlists.addedAt as wishlistDate");
 	} else {
 		query.select("products.*");
 	}
