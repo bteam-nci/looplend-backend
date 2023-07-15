@@ -8,8 +8,8 @@ getUserInfo:
         cors: true
         method: get
         authorizer: authorizer
-getRentalRequests:
-  handler: methods/users.getUserRequests
+getUserRentalRequests:
+  handler: methods/users.getUserRentalRequests
   events:
     - http:
         path: /me/requests
