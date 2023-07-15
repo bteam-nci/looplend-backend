@@ -68,7 +68,7 @@ function deleteField(subject, field) {
 }
 
 module.exports.returnList = (list, page, total, statusCode) => {
-	const localList = list.map((entity) => maskEntity(entity));
+	const localList = list.map((entity) => maskEntity(entity.value, entity._type));
 	return {
 		statusCode: statusCode ?? 200,
 		body: JSON.stringify({
