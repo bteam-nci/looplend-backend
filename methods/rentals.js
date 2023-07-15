@@ -2,6 +2,7 @@ const attachDb = require("./libs/db");
 const apigHelper = require("./libs/apigHelper");
 const {rental: validator} = require("./libs/validators");
 const rentals = require("./libs/repositories/rentals");
+const products = require("./libs/repositories/products");
 
 module.exports.getRental = attachDb(async (event, context) => {
   const userId = apigHelper.getUserId(event);
@@ -113,10 +114,12 @@ module.exports.createRental = attachDb(async (event, context) => {
       message: "Cannot rent your own product"
     }, 403);
   }
-
-  // create base product
+  // calculate the price by multiplying the price of the product by difference between the start and end date
+  const price = product.price * (new Date(rentalInput.endDate) - new Date(rentalInput.startDate)) / (1000 * 60 * 60 * 24);
+  // create base rental
   const baseRental = {
     ...rentalInput,
+    total: price,
     borrowerId: userId
   }
 
