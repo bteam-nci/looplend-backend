@@ -4,7 +4,8 @@ module.exports.add = async (productId, userId, dbInstance) => {
 	return dbInstance("users_wishlists").insert({
 		productId,
 		userId,
-	}).onConflict(["productId", "userId"]).merge();
+	}).onConflict(["productId", "userId"])
+		.ignore()
 }
 
 module.exports.remove = async (productId, userId, dbInstance) => {

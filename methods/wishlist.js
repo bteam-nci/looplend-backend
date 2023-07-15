@@ -27,7 +27,7 @@ module.exports.addProduct = attachDb(async (event, context) => {
 			"message": "Product not found"
 		}, 404);
 	}
-	await wishlist.add(userId, pID, dbInstance);
+	await wishlist.add(pID, userId, dbInstance);
 	return apigHelper.returnEntity(product);
 });
 
