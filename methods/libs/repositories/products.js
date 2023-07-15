@@ -94,17 +94,18 @@ module.exports.list = async (params, userId, dbInstance) => {
 	if (userId) {
 		query.leftJoin("wishlist", function () {
 			this.on("wishlist.productId", "=", "products.id").andOn("wishlist.userId", "=", userId);
-		})
-		.select("wishlist.id as wishlistId");
+		}).select("products.*", "wishlist.addedAt as wishlistDate");
+	} else {
+		query.select("products.*");
 	}
-
 	const products = await query.clone()
-		// include the wishlist info
-		.select("products.*")
 		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p=>({
-		value: p,
+		value: {
+			...p,
+			isWishlisted: !!p.wishlistDate
+		},
 		_type: "Product"
 	})), parseInt(total.total)];
 }

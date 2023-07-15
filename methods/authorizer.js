@@ -11,6 +11,9 @@ jwIDAQAB
 -----END PUBLIC KEY-----`
 });
 
+const passthroughEndpoints = [
+	"/GET/products",
+]
 // Authorizer function
 module.exports.handler = async (event) => {
 	try {
@@ -22,6 +25,9 @@ module.exports.handler = async (event) => {
 		// Return the policy document for API Gateway to allow access
 		return generatePolicy(sub, "Allow", event.methodArn, { userId:sub });
 	} catch (error) {
+		if (passthroughEndpoints.some(e=> event.methodArn.endsWith(e))){
+			return generatePolicy(null, "Allow", event.methodArn);
+		}
 		console.error(error);
 		// Return the policy document for API Gateway to deny access
 		return generatePolicy(null, "Deny", event.methodArn);

@@ -40,3 +40,4 @@ listProducts:
         path: /products
         method: get
         cors: true
+        authorizer: authorizer
