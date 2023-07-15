@@ -90,7 +90,14 @@ module.exports.list = async (params, dbInstance) => {
 	}
 
 	const total = await query.clone().count("*", { as: "total" }).first();
-	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+
+	const products = await query.clone()
+		// include the wishlist info
+		.leftJoin("wishlist", function () {
+			this.on("wishlist.productId", "=", "products.id").andOn("wishlist.userId", "=", userId)
+		})
+		.select("products.*", "wishlist.addedAt as wishlistDate")
+		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p=>({
 		value: p,
