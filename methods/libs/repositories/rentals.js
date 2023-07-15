@@ -70,10 +70,10 @@ module.exports.accept = async (product, dbInstance) => {
 
 module.exports.list = async (userId, params, dbInstance) => {
 	const { page } = params;
-	const query = dbInstance("rentals").where("borrowerId", userId).join("products", "products.id", "rentals.productId").select("rentals.*", "products.name as productName", "products.image as productImage");
+	const query = dbInstance("rentals").where("borrowerId", userId);
 
 	const total = await query.clone().count("*", { as: "total" }).first();
-	const rentals = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+	const rentals = await query.clone().join("products", "products.id", "rentals.productId").select("rentals.*", "products.name as productName", "products.image as productImage").orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [rentals.map(p=>({
 		value: {
@@ -93,11 +93,12 @@ module.exports.listRequests = async (userId, params, dbInstance) => {
 	const { page } = params;
 	const query = dbInstance("rentals")
 		.join("products", "products.id", "rentals.productId")
-		.select("rentals.*", "products.name as productName", "products.image as productImage", "products.ownerId as productOwnerId")
 		.where("products.ownerId", userId);
 
 	const total = await query.clone().count("*", { as: "total" }).first();
-	const rentals = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+	const rentals = await query.clone()
+		.select("rentals.*", "products.name as productName", "products.image as productImage")
+		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [rentals.map(p=>({
 		value: {

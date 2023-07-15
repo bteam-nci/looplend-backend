@@ -12,10 +12,10 @@ module.exports.remove = async (productId, userId, dbInstance) => {
 }
 
 module.exports.list = async (userId, page, dbInstance) => {
-	const query = dbInstance("users_wishlists").where("userId", userId).join("products", "users_wishlists.productId", "products.id").select("products.*").select("users_wishlists.addedAt");
+	const query = dbInstance("users_wishlists").where("userId", userId).join("products", "users_wishlists.productId", "products.id")
 
 	const total = await query.clone().count("*", { as: "total" }).first();
-	const products = await query.clone().orderBy("addedAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+	const products = await query.clone().select("products.*", "users_wishlists.addedAt").orderBy("addedAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p=>({
 		...p,
