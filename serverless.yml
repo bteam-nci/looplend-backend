@@ -11,6 +11,18 @@ provider:
   runtime: nodejs18.x
   region: eu-west-1
   timeout: 10
+  architecture: arm64
+  apiGateway:
+    cors:
+      origins:
+        - '*'
+      headers:
+        - Content-Type
+        - X-Amz-Date
+        - Authorization
+        - X-Api-Key
+        - X-Amz-Security-Token
+      allowCredentials: false
   versionFunctions: false
   environment:
     DB_URL: ${env:DB_URL}
@@ -35,6 +47,26 @@ custom:
       - sqlite3
 
 resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseType: DEFAULT_4XX
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    GatewayResponseDefault5XX:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseType: DEFAULT_5XX
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        RestApiId:
+          Ref: ApiGatewayRestApi
   Outputs:
     authorizerArn:
       Value: !GetAtt AuthorizerLambdaFunction.Arn
