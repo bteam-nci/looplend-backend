@@ -13,7 +13,7 @@ module.exports.removeProduct = attachDb(async (event, context) => {
 			"message": "Product not found"
 		}, 404);
 	}
-	await wishlist.remove(userId, pID, dbInstance);
+	await wishlist.remove(pID, userId, dbInstance);
 	return apigHelper.returnEntity(product);
 });
 

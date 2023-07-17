@@ -74,7 +74,7 @@ module.exports.returnList = (list, page, total, statusCode) => {
 		body: JSON.stringify({
 			data: localList,
 			count: localList.length,
-			page,
+			page: page ? parseInt(page) : 1,
 			total
 		}),
 		headers: {

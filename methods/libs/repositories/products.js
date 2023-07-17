@@ -110,7 +110,8 @@ module.exports.list = async (params, userId, dbInstance) => {
 	})), parseInt(total.total)];
 }
 
-module.exports.listUserProducts = async (userId, dbInstance) => {
+module.exports.listUserProducts = async (params, userId, dbInstance) => {
+	const { page } = params;
 	const query = dbInstance("products").where("userId", userId);
 	const total = await query.clone().count("*", { as: "total" }).first();
 	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);

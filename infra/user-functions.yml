@@ -16,6 +16,14 @@ getUserRentalRequests:
         cors: true
         method: get
         authorizer: authorizer
+listUserProducts:
+  handler: methods/users.listUserProducts
+  events:
+    - http:
+        path: /me/products
+        cors: true
+        method: get
+        authorizer: authorizer
 clerkWebhook:
   handler: methods/clerk.clerkWebhook
   events:
