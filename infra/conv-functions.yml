@@ -5,7 +5,11 @@
 #        path: /conversations
 #        method: get
 #        cors: true
-#        authorizer: authorizer
+#        authorizer:
+#          name: authorizer
+#          resultTtlInSeconds: 0
+#          identitySource: method.request.header.Authorization
+#          type: request
 #
 #getConversationMessages:
 #  handler: methods/conv.getConversationMessages
@@ -14,7 +18,11 @@
 #        path: /conversations/{cID}/messages
 #        method: get
 #        cors: true
-#        authorizer: authorizer
+#        authorizer:
+#          name: authorizer
+#          resultTtlInSeconds: 0
+#          identitySource: method.request.header.Authorization
+#          type: request
 #
 #sendConversationMessage:
 #  handler: methods/conv.sendConversationMessage
@@ -23,4 +31,8 @@
 #        path: /conversations/{cID}/messages
 #        method: post
 #        cors: true
-#        authorizer: authorizer
+#        authorizer:
+#          name: authorizer
+#          resultTtlInSeconds: 0
+#          identitySource: method.request.header.Authorization
+#          type: request

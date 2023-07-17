@@ -5,7 +5,11 @@ getUserWishlist:
         path: /me/wishlist
         cors: true
         method: get
-        authorizer: authorizer
+        authorizer:
+          name: authorizer
+          resultTtlInSeconds: 0
+          identitySource: method.request.header.Authorization
+          type: request
 
 addProductToWishlist:
   handler: methods/wishlist.addProduct
@@ -14,7 +18,11 @@ addProductToWishlist:
         path: /products/{pID}/wishlist
         method: post
         cors: true
-        authorizer: authorizer
+        authorizer:
+          name: authorizer
+          resultTtlInSeconds: 0
+          identitySource: method.request.header.Authorization
+          type: request
 removeProductToWishlist:
   handler: methods/wishlist.removeProduct
   events:
@@ -22,4 +30,8 @@ removeProductToWishlist:
         path: /products/{pID}/wishlist
         method: delete
         cors: true
-        authorizer: authorizer
+        authorizer:
+          name: authorizer
+          resultTtlInSeconds: 0
+          identitySource: method.request.header.Authorization
+          type: request

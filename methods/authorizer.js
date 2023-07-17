@@ -18,16 +18,17 @@ const passthroughEndpoints = [
 module.exports.handler = async (event) => {
 	try {
 		// Get the JWT token from the Authorization header
-		const token = event.authorizationToken;
+		const token  = event.headers.Authorization;
+		// Allow pass through endpoints
+		if (passthroughEndpoints.some(e=> event.methodArn.endsWith(e))){
+			return generatePolicy(null, "Allow", event.methodArn);
+		}
 
 		// Verify the token using Clerk SDK
 		const {sub} = await clerk.verifyToken(token);
 		// Return the policy document for API Gateway to allow access
 		return generatePolicy(sub, "Allow", event.methodArn, { userId:sub });
 	} catch (error) {
-		if (passthroughEndpoints.some(e=> event.methodArn.endsWith(e))){
-			return generatePolicy(null, "Allow", event.methodArn);
-		}
 		console.error(error);
 		// Return the policy document for API Gateway to deny access
 		return generatePolicy(null, "Deny", event.methodArn);
