@@ -8,7 +8,6 @@ getUserWishlist:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 
 addProductToWishlist:
@@ -21,7 +20,6 @@ addProductToWishlist:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 removeProductToWishlist:
   handler: methods/wishlist.removeProduct
@@ -33,5 +31,4 @@ removeProductToWishlist:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request

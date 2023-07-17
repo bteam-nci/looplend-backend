@@ -8,7 +8,6 @@ getRental:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 
 listRentals:
@@ -21,7 +20,6 @@ listRentals:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 
 createRental:
@@ -34,7 +32,6 @@ createRental:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 
 acceptRental:
@@ -47,7 +44,6 @@ acceptRental:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 
 denyRental:
@@ -60,5 +56,4 @@ denyRental:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request

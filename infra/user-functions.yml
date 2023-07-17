@@ -10,7 +10,6 @@ getUserInfo:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 getUserRentalRequests:
   handler: methods/users.getUserRentalRequests
@@ -22,7 +21,6 @@ getUserRentalRequests:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 listUserProducts:
   handler: methods/users.listUserProducts
@@ -34,7 +32,6 @@ listUserProducts:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 clerkWebhook:
   handler: methods/clerk.clerkWebhook

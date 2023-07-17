@@ -8,7 +8,6 @@ createProduct:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 
 editProduct:
@@ -21,7 +20,6 @@ editProduct:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 
 deleteProduct:
@@ -34,7 +32,6 @@ deleteProduct:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 #
 #sendProductFeedback:
@@ -59,5 +56,4 @@ listProducts:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
