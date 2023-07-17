@@ -37,7 +37,7 @@ module.exports.deleteProduct = attachDb(async (event, context) => {
 			"message": "Product not found"
 		}, 404);
 	}
-	if(product.ownerId !== userId){
+	if(product.value.ownerId !== userId){
 		return apigHelper.error({
 			"message": "Not authorized to delete this product"
 		}, 401);
@@ -67,7 +67,7 @@ module.exports.editProduct = attachDb(async (event, context) => {
 			"message": "Product not found"
 		}, 404);
 	}
-	if(product.ownerId !== userId){
+	if(product.value.ownerId !== userId){
 		return apigHelper.error({
 			"message": "Not authorized to delete this product"
 		}, 401);

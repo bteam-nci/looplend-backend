@@ -15,7 +15,7 @@ module.exports.getRental = attachDb(async (event, context) => {
       message: "Rental not found"
     }, 404);
   }
-  rental.belongsToUser = rental.value.borrowerId === userId;
+  rental.value.belongsToUser = rental.value.borrowerId === userId;
   return apigHelper.returnEntity(rental);
 });
 
@@ -40,9 +40,9 @@ module.exports.acceptRental = attachDb(async (event, context) => {
       message: "Rental not found"
     }, 404);
   }
-  rental.belongsToUser = rental.value.borrowerId === userId;
+  rental.value.belongsToUser = rental.value.borrowerId === userId;
 
-  if(!rental.belongsToUser){
+  if(!rental.value.belongsToUser){
     return apigHelper.error({
       message: "Rental does not belong to user"
     }, 403);
@@ -70,9 +70,9 @@ module.exports.denyRental = attachDb(async (event, context) => {
       message: "Rental not found"
     }, 404);
   }
-  rental.belongsToUser = rental.value.borrowerId === userId;
+  rental.value.belongsToUser = rental.value.borrowerId === userId;
 
-  if(!rental.belongsToUser){
+  if(!rental.value.belongsToUser){
     return apigHelper.error({
       message: "Rental does not belong to user"
     }, 403);
@@ -109,13 +109,13 @@ module.exports.createRental = attachDb(async (event, context) => {
     }, 404);
   }
 
-  if(product.ownerId === userId) {
+  if(product.value.ownerId === userId) {
     return apigHelper.error({
       message: "Cannot rent your own product"
     }, 403);
   }
   // calculate the price by multiplying the price of the product by difference between the start and end date
-  const price = product.price * (new Date(rentalInput.endDate) - new Date(rentalInput.startDate)) / (1000 * 60 * 60 * 24);
+  const price = product.value.price * (new Date(rentalInput.endDate) - new Date(rentalInput.startDate)) / (1000 * 60 * 60 * 24);
   // create base rental
   const baseRental = {
     ...rentalInput,
