@@ -15,7 +15,7 @@ module.exports.get = async (productId, dbInstance) => {
 	return {
 		value: {
 			...product,
-			productRating: p.productrating ? parseFloat(p.productrating).toFixed(1) : 0,
+			productRating: product.productrating ? parseFloat(product.productrating).toFixed(1) : 0,
 		},
 		_type: "Product"
 	}
@@ -100,10 +100,11 @@ module.exports.list = async (params, userId, dbInstance) => {
 	const total = await query.clone().count("*", {as: "total"}).first();
 	let selectParts = ["products.*", dbInstance.raw("avg(product_feedbacks.rating) as productRating")];
 	if (userId) {
-		selectParts.push("users_wishlists.addedAt as wishlistDate");
-		query.leftJoin("users_wishlists", function () {
-			this.on("users_wishlists.productId", "=", "products.id").andOn("users_wishlists.userId", "=", dbInstance.raw("?", [userId]));
-		})
+		selectParts.push(dbInstance.raw(`(
+    select count(*)
+        from "users_wishlists"
+        where "users_wishlists"."productId" = "products"."id" and "users_wishlists"."userId" = ?
+    ) as wishlistCount`, [userId]));
 	}
 	const products = await query.clone()
 		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
@@ -114,8 +115,9 @@ module.exports.list = async (params, userId, dbInstance) => {
 	return [products.map(p => ({
 		value: {
 			...p,
+			wishlistcount: undefined,
 			productRating: (p.productrating ? parseFloat(p.productrating).toFixed(1) : 0),
-			isWishlisted: !!p.wishlistDate
+			isWishlisted: p.wishlistcount > 0
 		},
 		_type: "Product"
 	})), parseInt(total.total)];
