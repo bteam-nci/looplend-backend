@@ -1,14 +1,22 @@
 const PAGE_LIMIT = 20;
 
 module.exports.get = async (productId, dbInstance) => {
-	const product = await dbInstance("products").where("id", productId).first();
+	const product = await dbInstance("products")
+		.where("id", productId)
+		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
+		.groupBy("products.id")
+		.select("products.*", dbInstance.raw("avg(product_feedbacks.rating) as productRating"))
+		.first();
 	if (!product) {
 		return null;
 	}
 	product.owner = await dbInstance("users").where("id", product.ownerId).first();
 	product.availabilities = await dbInstance("products_availability").where("productId", productId);
 	return {
-		value: product,
+		value: {
+			...product,
+			productRating: p.productrating ? parseFloat(p.productrating).toFixed(1) : 0,
+		},
 		_type: "Product"
 	}
 }
@@ -61,7 +69,7 @@ module.exports.edit = async (product, dbInstance) => {
 }
 
 module.exports.list = async (params, userId, dbInstance) => {
-	const { page, category, priceEnd, dateStart, dateEnd } = params;
+	const {page, category, priceEnd, dateStart, dateEnd} = params;
 	const query = dbInstance("products");
 
 	if (category) {
@@ -89,8 +97,8 @@ module.exports.list = async (params, userId, dbInstance) => {
 		});
 	}
 
-	const total = await query.clone().count("*", { as: "total" }).first();
-	let selectParts = ["products.*", dbInstance.raw("avg(user_feedbacks.rating) as ownerRating")];
+	const total = await query.clone().count("*", {as: "total"}).first();
+	let selectParts = ["products.*", dbInstance.raw("avg(product_feedbacks.rating) as productRating")];
 	if (userId) {
 		selectParts.push("users_wishlists.addedAt as wishlistDate");
 		query.leftJoin("users_wishlists", function () {
@@ -103,9 +111,10 @@ module.exports.list = async (params, userId, dbInstance) => {
 		.select(selectParts)
 		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
-	return [products.map(p=>({
+	return [products.map(p => ({
 		value: {
 			...p,
+			productRating: (p.productrating ? parseFloat(p.productrating).toFixed(1) : 0),
 			isWishlisted: !!p.wishlistDate
 		},
 		_type: "Product"
@@ -113,12 +122,12 @@ module.exports.list = async (params, userId, dbInstance) => {
 }
 
 module.exports.listUserProducts = async (params, userId, dbInstance) => {
-	const { page } = params;
+	const {page} = params;
 	const query = dbInstance("products").where("ownerId", userId);
-	const total = await query.clone().count("*", { as: "total" }).first();
+	const total = await query.clone().count("*", {as: "total"}).first();
 	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
-	return [products.map(p=>({
+	return [products.map(p => ({
 		value: p,
 		_type: "Product"
 	})), parseInt(total.total)];
