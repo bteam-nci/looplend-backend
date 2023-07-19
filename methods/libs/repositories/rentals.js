@@ -52,7 +52,7 @@ module.exports.create = async (rentalInput, dbInstance) => {
 		value: {
 			...rental
 		},
-		_type: "Product"
+		_type: "Rental"
 	}
 }
 
@@ -73,16 +73,28 @@ module.exports.list = async (userId, params, dbInstance) => {
 	const query = dbInstance("rentals").where("borrowerId", userId);
 
 	const total = await query.clone().count("*", { as: "total" }).first();
-	const rentals = await query.clone().join("products", "products.id", "rentals.productId").select("rentals.*", "products.name as productName", "products.image as productImage").orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+	const rentals = await query.clone()
+		.leftJoin("products", "products.id", "rentals.productId")
+		.leftJoin("users", "users.id", "products.ownerId")
+		.leftJoin("user_feedbacks", "user_feedbacks.userId", "users.id")
+		.groupBy("rentals.id", "rentals.createdAt", "products.name", "products.image", "users.fullName")
+		.select("rentals.*", "products.name as productName", "products.image as productImage", "users.fullName as ownerName", dbInstance.raw("avg(user_feedbacks.rating) as ownerRating"))
+		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [rentals.map(p=>({
 		value: {
 			...p,
 			productName: undefined,
 			productImage: undefined,
+			ownerName: undefined,
+			ownerrating: undefined,
 			product: {
 				name: p.productName,
 				image: p.productImage
+			},
+			owner: {
+				name: p.borrowerName,
+				rating: parseFloat(p.ownerrating).toFixed(1)
 			}
 		},
 		_type: "Rental"
@@ -92,12 +104,15 @@ module.exports.list = async (userId, params, dbInstance) => {
 module.exports.listRequests = async (userId, params, dbInstance) => {
 	const { page } = params;
 	const query = dbInstance("rentals")
-		.join("products", "products.id", "rentals.productId")
+		.leftJoin("products", "products.id", "rentals.productId")
 		.where("products.ownerId", userId);
 
 	const total = await query.clone().count("*", { as: "total" }).first();
 	const rentals = await query.clone()
-		.select("rentals.*", "products.name as productName", "products.image as productImage")
+		.leftJoin("users", "users.id", "rentals.borrowerId")
+		.leftJoin("user_feedbacks", "user_feedbacks.userId", "users.id")
+		.groupBy("rentals.id", "rentals.createdAt", "products.name", "products.image", "users.fullName")
+		.select("rentals.*", "products.name as productName", "products.image as productImage", "users.fullName as borrowerName", dbInstance.raw("avg(user_feedbacks.rating) as borrowerRating"))
 		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [rentals.map(p=>({
@@ -105,9 +120,15 @@ module.exports.listRequests = async (userId, params, dbInstance) => {
 			...p,
 			productName: undefined,
 			productImage: undefined,
+			borrowerName: undefined,
+			borrowerrating: undefined,
 			product: {
 				name: p.productName,
 				image: p.productImage
+			},
+			borrower: {
+				name: p.borrowerName,
+				rating: parseFloat(p.borrowerrating).toFixed(1)
 			}
 		},
 		_type: "Rental"

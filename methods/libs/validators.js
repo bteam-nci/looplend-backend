@@ -49,7 +49,7 @@ const schemas = {
 		type: "object",
 		properties: {
 			productId: {
-				type: "integer"
+				type: "string"
 			},
 			start: {
 				type: "string",
@@ -66,6 +66,6 @@ const schemas = {
 module.exports.product =  (product) => {
 	return validate(product, schemas.product).valid;
 }
-module.exports.rental =  (product) => {
-	return validate(product, schemas.product).valid;
+module.exports.rental =  (rental) => {
+	return validate(rental, schemas.rental).valid;
 }

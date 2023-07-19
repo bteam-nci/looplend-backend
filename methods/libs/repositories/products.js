@@ -90,15 +90,17 @@ module.exports.list = async (params, userId, dbInstance) => {
 	}
 
 	const total = await query.clone().count("*", { as: "total" }).first();
-
+	let selectParts = ["products.*", dbInstance.raw("avg(user_feedbacks.rating) as ownerRating")];
 	if (userId) {
+		selectParts.push("users_wishlists.addedAt as wishlistDate");
 		query.leftJoin("users_wishlists", function () {
 			this.on("users_wishlists.productId", "=", "products.id").andOn("users_wishlists.userId", "=", dbInstance.raw("?", [userId]));
-		}).select("products.*", "users_wishlists.addedAt as wishlistDate");
-	} else {
-		query.select("products.*");
+		})
 	}
 	const products = await query.clone()
+		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
+		.groupBy("products.id")
+		.select(selectParts)
 		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p=>({

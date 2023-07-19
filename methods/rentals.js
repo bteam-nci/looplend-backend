@@ -97,11 +97,21 @@ module.exports.createRental = attachDb(async (event, context) => {
 
   if (!validator(rentalInput)) {
     return apigHelper.badRequest({
-      "message": "Invalid Rental"
+      "message": "Invalid rental"
+    });
+  }
+  if (new Date(rentalInput.start) > new Date(rentalInput.end)) {
+    return apigHelper.badRequest({
+      "message": "Invalid rental dates"
+    });
+  }
+  if (new Date(rentalInput.start) < new Date()) {
+    return apigHelper.badRequest({
+      "message": "Start date must be in the future"
     });
   }
 
-  const {product} = await products.get(rentalInput.productId, dbInstance);
+  const product = await products.get(rentalInput.productId, dbInstance);
 
   if(!product){
     return apigHelper.error({
@@ -115,7 +125,7 @@ module.exports.createRental = attachDb(async (event, context) => {
     }, 403);
   }
   // calculate the price by multiplying the price of the product by difference between the start and end date
-  const price = product.value.price * (new Date(rentalInput.endDate) - new Date(rentalInput.startDate)) / (1000 * 60 * 60 * 24);
+  const price = product.value.price * (new Date(rentalInput.end) - new Date(rentalInput.start)) / (1000 * 60 * 60 * 24);
   // create base rental
   const baseRental = {
     ...rentalInput,
