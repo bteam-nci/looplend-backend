@@ -47,7 +47,7 @@ module.exports.acceptRental = attachDb(async (event, context) => {
     }, 403);
   }
 
-  if(rental.value.status !== 0){
+  if(rental.value.status !== "PENDING"){
     return apigHelper.error({
       message: "Rental is not pending"
     }, 400);
@@ -77,7 +77,7 @@ module.exports.denyRental = attachDb(async (event, context) => {
     }, 403);
   }
 
-  if(rental.value.status !== 0){
+  if(rental.value.status !== "PENDING"){
     return apigHelper.error({
       message: "Rental is not pending"
     }, 400);
