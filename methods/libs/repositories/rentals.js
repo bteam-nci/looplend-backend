@@ -69,8 +69,30 @@ module.exports.accept = async (rentalId, dbInstance) => {
 }
 
 module.exports.list = async (userId, params, dbInstance) => {
-	const { page } = params;
+	const { page, status } = params;
 	const query = dbInstance("rentals").where("rentals.borrowerId", userId);
+	if(status){
+		switch (status) {
+			case "PENDING":
+				query.andWhere("rentals.status", 0);
+				break;
+			case "DENIED":
+				query.andWhere("rentals.status", 2);
+				break;
+			case "UPCOMING":
+				query.andWhere("rentals.status", 1)
+					.andWhere(dbInstance.raw("rentals.start > now()"));
+				break;
+			case "COMPLETED":
+				query.andWhere("rentals.status", 1)
+					.andWhere(dbInstance.raw("rentals.end < now()"));
+				break;
+			case "ONGOING":
+				query.andWhere("rentals.status", 1)
+					.andWhere(dbInstance.raw("now() between rentals.start and rentals.end"));
+				break;
+		}
+	}
 	const total = await query.clone().count("*", { as: "total" }).first();
 	const rentals = await query.clone()
 		.leftJoin("products", "products.id", "rentals.productId")
@@ -81,14 +103,6 @@ module.exports.list = async (userId, params, dbInstance) => {
 		.select("rentals.*", "products.name as productName", "products.image as productImage", "users.fullName as ownerName", dbInstance.raw("avg(user_feedbacks.rating) as ownerRating"), dbInstance.raw("avg(product_feedbacks.rating) as productRating"))
 		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
-	console.log(query.clone()
-		.leftJoin("products", "products.id", "rentals.productId")
-		.leftJoin("users", "users.id", "products.ownerId")
-		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
-		.leftJoin("user_feedbacks", "user_feedbacks.userId", "users.id")
-		.groupBy("rentals.id", "rentals.createdAt", "products.name", "products.image", "users.fullName")
-		.select("rentals.*", "products.name as productName", "products.image as productImage", "users.fullName as ownerName", dbInstance.raw("avg(user_feedbacks.rating) as ownerRating"), dbInstance.raw("avg(product_feedbacks.rating) as productRating"))
-		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT).toString())
 	return [rentals.map(p=>({
 		value: {
 			...p,
@@ -96,6 +110,7 @@ module.exports.list = async (userId, params, dbInstance) => {
 			productImage: undefined,
 			ownerName: undefined,
 			ownerrating: undefined,
+			productrating: undefined,
 			product: {
 				name: p.productName,
 				image: p.productImage,
@@ -105,7 +120,7 @@ module.exports.list = async (userId, params, dbInstance) => {
 				name: p.ownerName,
 				rating: (p.ownerrating ? parseFloat(p.ownerrating).toFixed(1) : 0),
 			},
-			status: getStatus(p.status)
+			status: getStatus(p)
 		},
 		_type: "Rental"
 	})), parseInt(total.total)];
@@ -137,7 +152,7 @@ module.exports.listRequests = async (userId, params, dbInstance) => {
 				name: p.productName,
 				image: p.productImage
 			},
-			status: getStatus(p.status),
+			status: getStatus(p),
 			borrower: {
 				name: p.borrowerName,
 				rating: (p.ownerrating ? parseFloat(p.ownerrating).toFixed(1) : 0),
