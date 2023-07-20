@@ -127,6 +127,7 @@ module.exports.listRequests = async (userId, params, dbInstance) => {
 				name: p.productName,
 				image: p.productImage
 			},
+			status: getStatus(rental),
 			borrower: {
 				name: p.borrowerName,
 				rating: parseFloat(p.borrowerrating).toFixed(1)
