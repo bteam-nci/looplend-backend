@@ -55,7 +55,7 @@ module.exports.acceptRental = attachDb(async (event, context) => {
 
   await rentals.accept(rID, dbInstance);
 
-  return apigHelper.returnEntity(rental);
+  return apigHelper.returnEntity({value:{}});
 });
 
 module.exports.denyRental = attachDb(async (event, context) => {
@@ -85,7 +85,7 @@ module.exports.denyRental = attachDb(async (event, context) => {
 
   await rentals.deny(rID, dbInstance);
 
-  return apigHelper.returnEntity(rental);
+  return apigHelper.returnEntity({value:{}});
 });
 
 module.exports.createRental = attachDb(async (event, context) => {
