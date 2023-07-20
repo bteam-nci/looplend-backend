@@ -41,17 +41,16 @@ module.exports.acceptRental = attachDb(async (event, context) => {
     }, 404);
   }
   rental.value.belongsToUser = rental.value.borrowerId === userId;
-
-  if(!rental.value.belongsToUser){
+  if(rental.value.belongsToUser && rental.value.product.borrowerId !== userId){
     return apigHelper.error({
-      message: "Rental does not belong to user"
+      message: "This user can not accept this rental request"
     }, 403);
   }
 
   if(rental.value.status !== 0){
     return apigHelper.error({
       message: "Rental is not pending"
-    }, 403);
+    }, 400);
   }
 
   await rentals.accept(rID, dbInstance);
@@ -72,16 +71,16 @@ module.exports.denyRental = attachDb(async (event, context) => {
   }
   rental.value.belongsToUser = rental.value.borrowerId === userId;
 
-  if(!rental.value.belongsToUser){
+  if(rental.value.belongsToUser && rental.value.product.borrowerId !== userId){
     return apigHelper.error({
-      message: "Rental does not belong to user"
+      message: "This user can not accept this rental request"
     }, 403);
   }
 
   if(rental.value.status !== 0){
     return apigHelper.error({
       message: "Rental is not pending"
-    }, 403);
+    }, 400);
   }
 
   await rentals.deny(rID, dbInstance);
