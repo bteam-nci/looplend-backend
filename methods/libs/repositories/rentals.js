@@ -12,8 +12,8 @@ if status is 2, then the rental is past
 */
 
 function getStatus(rental){
-	if (rental.status === 2) return "DENIED";
 	if (rental.status === 0) return "PENDING";
+	if (rental.status === 2) return "DENIED";
 	if (new Date(rental.startDate) > new Date()) return "UPCOMING";
 	if (new Date(rental.endDate) < new Date()) return "COMPLETED";
 	return "ONGOING";
@@ -48,10 +48,10 @@ module.exports.create = async (rentalInput, dbInstance) => {
 
 	rental.borrower = await dbInstance("users").where("id", rental.borrowerId).first();
 
+	rental.status = getStatus(rental);
+
 	return {
-		value: {
-			...rental
-		},
+		value: rental,
 		_type: "Rental"
 	}
 }
@@ -62,7 +62,7 @@ module.exports.deny = async (rentalId, dbInstance) => {
 	});
 }
 
-module.exports.accept = async (product, dbInstance) => {
+module.exports.accept = async (rentalId, dbInstance) => {
 	return dbInstance("rentals").where("id", rentalId).update({
 		status: 1
 	});
@@ -70,7 +70,8 @@ module.exports.accept = async (product, dbInstance) => {
 
 module.exports.list = async (userId, params, dbInstance) => {
 	const { page } = params;
-	const query = dbInstance("rentals").where("borrowerId", userId);
+	const query = dbInstance("rentals").where("rentals.borrowerId", userId)
+		.andWhere("rentals.status", ">", 0);
 
 	const total = await query.clone().count("*", { as: "total" }).first();
 	const rentals = await query.clone()
@@ -93,9 +94,10 @@ module.exports.list = async (userId, params, dbInstance) => {
 				image: p.productImage
 			},
 			owner: {
-				name: p.borrowerName,
+				name: p.ownerName,
 				rating: parseFloat(p.ownerrating).toFixed(1)
-			}
+			},
+			status: getStatus(p.status)
 		},
 		_type: "Rental"
 	})), parseInt(total.total)];
@@ -105,7 +107,8 @@ module.exports.listRequests = async (userId, params, dbInstance) => {
 	const { page } = params;
 	const query = dbInstance("rentals")
 		.leftJoin("products", "products.id", "rentals.productId")
-		.where("products.ownerId", userId);
+		.where("products.ownerId", userId)
+		.andWhere("rentals.status", "=", 0);
 
 	const total = await query.clone().count("*", { as: "total" }).first();
 	const rentals = await query.clone()
