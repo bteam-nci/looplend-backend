@@ -24,9 +24,9 @@ module.exports.listRentals = attachDb(async (event, context) => {
   const {page} = event.queryStringParameters ?? {};
   const dbInstance = context.dbInstance;
 
-  const [rentals, total] = await rentals.list(userId, {page}, dbInstance);
+  const [list, total] = await rentals.list(userId, {page}, dbInstance);
 
-  return apigHelper.returnList(rental, page, total);
+  return apigHelper.returnList(list, page, total);
 });
 
 module.exports.acceptRental = attachDb(async (event, context) => {

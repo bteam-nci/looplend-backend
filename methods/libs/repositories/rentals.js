@@ -75,11 +75,20 @@ module.exports.list = async (userId, params, dbInstance) => {
 	const rentals = await query.clone()
 		.leftJoin("products", "products.id", "rentals.productId")
 		.leftJoin("users", "users.id", "products.ownerId")
+		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
 		.leftJoin("user_feedbacks", "user_feedbacks.userId", "users.id")
 		.groupBy("rentals.id", "rentals.createdAt", "products.name", "products.image", "users.fullName")
-		.select("rentals.*", "products.name as productName", "products.image as productImage", "users.fullName as ownerName", dbInstance.raw("avg(user_feedbacks.rating) as ownerRating"))
+		.select("rentals.*", "products.name as productName", "products.image as productImage", "users.fullName as ownerName", dbInstance.raw("avg(user_feedbacks.rating) as ownerRating"), dbInstance.raw("avg(product_feedbacks.rating) as productRating"))
 		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
+	console.log(query.clone()
+		.leftJoin("products", "products.id", "rentals.productId")
+		.leftJoin("users", "users.id", "products.ownerId")
+		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
+		.leftJoin("user_feedbacks", "user_feedbacks.userId", "users.id")
+		.groupBy("rentals.id", "rentals.createdAt", "products.name", "products.image", "users.fullName")
+		.select("rentals.*", "products.name as productName", "products.image as productImage", "users.fullName as ownerName", dbInstance.raw("avg(user_feedbacks.rating) as ownerRating"), dbInstance.raw("avg(product_feedbacks.rating) as productRating"))
+		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT).toString())
 	return [rentals.map(p=>({
 		value: {
 			...p,
@@ -89,11 +98,12 @@ module.exports.list = async (userId, params, dbInstance) => {
 			ownerrating: undefined,
 			product: {
 				name: p.productName,
-				image: p.productImage
+				image: p.productImage,
+				rating: (p.productrating ? parseFloat(p.productrating).toFixed(1) : 0),
 			},
 			owner: {
 				name: p.ownerName,
-				rating: parseFloat(p.ownerrating).toFixed(1)
+				rating: (p.ownerrating ? parseFloat(p.ownerrating).toFixed(1) : 0),
 			},
 			status: getStatus(p.status)
 		},
@@ -130,7 +140,7 @@ module.exports.listRequests = async (userId, params, dbInstance) => {
 			status: getStatus(p.status),
 			borrower: {
 				name: p.borrowerName,
-				rating: parseFloat(p.borrowerrating).toFixed(1)
+				rating: (p.ownerrating ? parseFloat(p.ownerrating).toFixed(1) : 0),
 			}
 		},
 		_type: "Rental"
