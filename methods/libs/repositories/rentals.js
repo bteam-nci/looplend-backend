@@ -70,9 +70,7 @@ module.exports.accept = async (rentalId, dbInstance) => {
 
 module.exports.list = async (userId, params, dbInstance) => {
 	const { page } = params;
-	const query = dbInstance("rentals").where("rentals.borrowerId", userId)
-		.andWhere("rentals.status", ">", 0);
-
+	const query = dbInstance("rentals").where("rentals.borrowerId", userId);
 	const total = await query.clone().count("*", { as: "total" }).first();
 	const rentals = await query.clone()
 		.leftJoin("products", "products.id", "rentals.productId")
