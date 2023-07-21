@@ -110,7 +110,7 @@ module.exports.list = async (params, userId, dbInstance) => {
 		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
 		.groupBy("products.id")
 		.select(selectParts)
-		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+		.orderBy("createdAt", "desc").orderBy("productRating", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p => ({
 		value: {
