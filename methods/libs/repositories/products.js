@@ -116,7 +116,8 @@ module.exports.list = async (params, userId, dbInstance) => {
 		value: {
 			...p,
 			wishlistcount: undefined,
-			productRating: (p.productrating ? parseFloat(p.productrating).toFixed(1) : 0),
+			productrating: undefined,
+			rating: (p.productrating ? parseFloat(p.productrating).toFixed(1) : 0),
 			isWishlisted: p.wishlistcount > 0
 		},
 		_type: "Product"

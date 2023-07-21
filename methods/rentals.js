@@ -124,7 +124,7 @@ module.exports.createRental = attachDb(async (event, context) => {
     }, 403);
   }
   // calculate the price by multiplying the price of the product by difference between the start and end date
-  const price = product.value.price * (new Date(rentalInput.end) - new Date(rentalInput.start)) / (1000 * 60 * 60 * 24);
+  const price = product.value.price * ((new Date(rentalInput.end) - new Date(rentalInput.start)) / (1000 * 60 * 60 * 24));
   // create base rental
   const baseRental = {
     ...rentalInput,
