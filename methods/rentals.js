@@ -47,6 +47,16 @@ module.exports.acceptRental = attachDb(async (event, context) => {
     }, 403);
   }
 
+  const [collidingAvailabilities, collidingRentals] = await Promise.all([
+    dbInstance("products_availabilities").where("productId", rental.value.productId).andWhere(dbInstance.raw("daterange(?, ?) && daterange(start, end)", [rental.value.start, rental.value.end])),
+    dbInstance("rentals").where("productId", rental.value.productId).andWhere("status", 1).andWhere(dbInstance.raw("daterange(?, ?) && daterange(start, end)", [rental.value.start, rental.value.end]))
+  ]);
+  if (collidingAvailabilities.length > 0 || collidingRentals.length > 0) {
+    return apigHelper.badRequest({
+      "message": "Rental collides with other rentals or availabilities"
+    });
+  }
+
   if(rental.value.status !== "PENDING"){
     return apigHelper.error({
       message: "Rental is not pending"
