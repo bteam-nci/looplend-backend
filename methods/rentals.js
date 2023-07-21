@@ -123,6 +123,18 @@ module.exports.createRental = attachDb(async (event, context) => {
       message: "Cannot rent your own product"
     }, 403);
   }
+
+  // check if the rentals collide with the availabilities and if the rentals collide with other rentals
+  const [collidingAvailabilities, collidingRentals] = await Promise.all([
+    dbInstance("products_availabilities").where("productId", rentalInput.productId).andWhere(dbInstance.raw("daterange(?, ?) && daterange(start, end)", [rentalInput.start, rentalInput.end])),
+    dbInstance("rentals").where("productId", rentalInput.productId).andWhere("status", 1).andWhere(dbInstance.raw("daterange(?, ?) && daterange(start, end)", [rentalInput.start, rentalInput.end]))
+  ]);
+  if (collidingAvailabilities.length > 0 || collidingRentals.length > 0) {
+    return apigHelper.badRequest({
+      "message": "Rental collides with other rentals or availabilities"
+    });
+  }
+
   // calculate the price by multiplying the price of the product by difference between the start and end date
   const price = product.value.price * ((new Date(rentalInput.end) - new Date(rentalInput.start)) / (1000 * 60 * 60 * 24));
   // create base rental

@@ -82,14 +82,15 @@ module.exports.list = async (params, userId, dbInstance) => {
 	// date range needs to check if the date range is NOT within the availabilities and if the date range is not colliding with rentals, the availabilities have start and end dates and also the rentals
 	if (dateStart && dateEnd) {
 		query.whereNotExists(function () {
-			this.select("*").from("products_availabilities").whereRaw("products_availabilities.productId = products.id").andWhere(
+			this.select("id").from("products_availabilities").whereRaw("products_availabilities.productId = products.id").andWhere(
 				(qB) => qB
 					.whereBetween("start", [dateStart, dateEnd])
 					.orWhereBetween("end", [dateStart, dateEnd])
 			);
 		});
 		query.whereNotExists(function () {
-			this.select("*").from("rentals").whereRaw("rentals.productId = products.id").andWhere(
+			this.select("id").from("rentals").whereRaw("rentals.productId = products.id")
+				.andWhere("rentals.status", 1).andWhere(
 				(qB) => qB
 					.whereBetween("start", [dateStart, dateEnd])
 					.orWhereBetween("end", [dateStart, dateEnd])
