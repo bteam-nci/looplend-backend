@@ -100,7 +100,9 @@ module.exports.list = async (userId, params, dbInstance) => {
 		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
 		.leftJoin("user_feedbacks", "user_feedbacks.userId", "users.id")
 		.groupBy("rentals.id", "rentals.createdAt", "products.name", "products.image", "users.fullName")
-		.select("rentals.*", "products.name as productName", "products.image as productImage", "users.fullName as ownerName", dbInstance.raw("avg(user_feedbacks.rating) as ownerRating"), dbInstance.raw("avg(product_feedbacks.rating) as productRating"))
+		.select("rentals.*", "products.name as productName", "products.image as productImage", "users.fullName as ownerName",
+			dbInstance.raw(`case when avg("user_feedbacks"."rating") is null then 0 else avg("user_feedbacks"."rating") end as ownerRating`),
+			dbInstance.raw(`case when avg("product_feedbacks"."rating") is null then 0 else avg("product_feedbacks"."rating") end as productRating`))
 		.orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [rentals.map(p=>({
@@ -114,11 +116,11 @@ module.exports.list = async (userId, params, dbInstance) => {
 			product: {
 				name: p.productName,
 				image: p.productImage,
-				rating: (p.productrating ? parseFloat(p.productrating).toFixed(1) : 0),
+				rating: parseFloat(p.productrating).toFixed(1),
 			},
 			owner: {
 				name: p.ownerName,
-				rating: (p.ownerrating ? parseFloat(p.ownerrating).toFixed(1) : 0),
+				rating:  parseFloat(p.ownerrating).toFixed(1),
 			},
 			status: getStatus(p)
 		},

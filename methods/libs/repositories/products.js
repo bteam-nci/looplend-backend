@@ -5,7 +5,7 @@ module.exports.get = async (productId, dbInstance) => {
 		.where("id", productId)
 		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
 		.groupBy("products.id")
-		.select("products.*", dbInstance.raw("avg(product_feedbacks.rating) as productRating"))
+		.select("products.*", dbInstance.raw(`case when avg("product_feedbacks"."rating") is null then 0 else avg("product_feedbacks"."rating") end as productRating`))
 		.first();
 	if (!product) {
 		return null;
@@ -15,7 +15,7 @@ module.exports.get = async (productId, dbInstance) => {
 	return {
 		value: {
 			...product,
-			productRating: product.productrating ? parseFloat(product.productrating).toFixed(1) : 0,
+			rating: parseFloat(product.productrating).toFixed(1),
 		},
 		_type: "Product"
 	}
@@ -98,7 +98,7 @@ module.exports.list = async (params, userId, dbInstance) => {
 	}
 
 	const total = await query.clone().count("*", {as: "total"}).first();
-	let selectParts = ["products.*", dbInstance.raw("avg(product_feedbacks.rating) as productRating")];
+	let selectParts = ["products.*", dbInstance.raw(`case when avg("product_feedbacks"."rating") is null then 0 else avg("product_feedbacks"."rating") end as productRating`)];
 	if (userId) {
 		selectParts.push(dbInstance.raw(`(
     select count(*)
@@ -110,14 +110,14 @@ module.exports.list = async (params, userId, dbInstance) => {
 		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
 		.groupBy("products.id")
 		.select(selectParts)
-		.orderBy("createdAt", "desc").orderBy("productRating", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
+		.orderBy("createdAt", "desc").orderBy("productrating", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p => ({
 		value: {
 			...p,
 			wishlistcount: undefined,
 			productrating: undefined,
-			rating: (p.productrating ? parseFloat(p.productrating).toFixed(1) : 0),
+			rating: parseFloat(p.productrating).toFixed(1),
 			isWishlisted: p.wishlistcount > 0
 		},
 		_type: "Product"
