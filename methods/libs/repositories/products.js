@@ -35,7 +35,7 @@ module.exports.create = async (product, dbInstance) => {
 			productId: value[0].id
 		}
 	});
-	await dbInstance("products_availabilities").insert(availabilities);
+	await dbInstance("products_availability").insert(availabilities);
 	return {
 		value: {
 			...value[0],
@@ -56,8 +56,8 @@ module.exports.edit = async (product, dbInstance) => {
 		}
 	});
 	await Promise.all([
-		dbInstance("products_availabilities").where("productId", product.id).del(),
-		dbInstance("products_availabilities").insert(availabilities)
+		dbInstance("products_availability").where("productId", product.id).del(),
+		dbInstance("products_availability").insert(availabilities)
 	])
 	return {
 		value: {
@@ -82,7 +82,7 @@ module.exports.list = async (params, userId, dbInstance) => {
 	// date range needs to check if the date range is NOT within the availabilities and if the date range is not colliding with rentals, the availabilities have start and end dates and also the rentals
 	if (dateStart && dateEnd) {
 		query.whereNotExists(function () {
-			this.select("id").from("products_availabilities").whereRaw("products_availabilities.productId = products.id").andWhere(
+			this.select("id").from("products_availability").whereRaw("products_availability.productId = products.id").andWhere(
 				(qB) => qB
 					.whereBetween("start", [dateStart, dateEnd])
 					.orWhereBetween("end", [dateStart, dateEnd])

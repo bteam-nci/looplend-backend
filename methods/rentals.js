@@ -48,8 +48,17 @@ module.exports.acceptRental = attachDb(async (event, context) => {
   }
 
   const [collidingAvailabilities, collidingRentals] = await Promise.all([
-    dbInstance("products_availabilities").where("productId", rental.value.productId).andWhere(dbInstance.raw("daterange(?, ?) && daterange(start, end)", [rental.value.start, rental.value.end])),
-    dbInstance("rentals").where("productId", rental.value.productId).andWhere("status", 1).andWhere(dbInstance.raw("daterange(?, ?) && daterange(start, end)", [rental.value.start, rental.value.end]))
+    dbInstance("products_availability").where("productId", rental.value.productId).whereRaw("products_availability.productId = products.id").andWhere(
+      (qB) => qB
+        .whereBetween("start", [rental.value.start, rental.value.end])
+        .orWhereBetween("end", [rental.value.start, rental.value.end])
+    ),
+    dbInstance("rentals").where("productId", rental.value.productId).andWhere("status", 1).whereRaw("rentals.productId = products.id")
+      .andWhere("rentals.status", 1).andWhere(
+      (qB) => qB
+        .whereBetween("start", [rental.value.start, rental.value.end])
+        .orWhereBetween("end", [rental.value.start, rental.value.end])
+    )
   ]);
   if (collidingAvailabilities.length > 0 || collidingRentals.length > 0) {
     return apigHelper.badRequest({
@@ -136,8 +145,17 @@ module.exports.createRental = attachDb(async (event, context) => {
 
   // check if the rentals collide with the availabilities and if the rentals collide with other rentals
   const [collidingAvailabilities, collidingRentals] = await Promise.all([
-    dbInstance("products_availabilities").where("productId", rentalInput.productId).andWhere(dbInstance.raw("daterange(?, ?) && daterange(start, end)", [rentalInput.start, rentalInput.end])),
-    dbInstance("rentals").where("productId", rentalInput.productId).andWhere("status", 1).andWhere(dbInstance.raw("daterange(?, ?) && daterange(start, end)", [rentalInput.start, rentalInput.end]))
+    dbInstance("products_availability").where("productId", rentalInput.productId).whereRaw("products_availability.productId = products.id").andWhere(
+      (qB) => qB
+        .whereBetween("start", [rentalInput.start, rentalInput.end])
+        .orWhereBetween("end", [rentalInput.start, rentalInput.end])
+    ),
+    dbInstance("rentals").where("productId", rentalInput.productId).andWhere("status", 1).whereRaw("rentals.productId = products.id")
+      .andWhere("rentals.status", 1).andWhere(
+      (qB) => qB
+        .whereBetween("start", [rentalInput.start, rentalInput.end])
+        .orWhereBetween("end", [rentalInput.start, rentalInput.end])
+    )
   ]);
   if (collidingAvailabilities.length > 0 || collidingRentals.length > 0) {
     return apigHelper.badRequest({
