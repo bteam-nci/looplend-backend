@@ -48,12 +48,12 @@ module.exports.acceptRental = attachDb(async (event, context) => {
   }
 
   const [collidingAvailabilities, collidingRentals] = await Promise.all([
-    dbInstance("products_availability").where("productId", rental.value.productId).whereRaw("products_availability.productId = products.id").andWhere(
+    dbInstance("products_availability").where("productId", rental.value.productId).where("products_availability.productId", rental.value.productId).andWhere(
       (qB) => qB
         .whereBetween("start", [rental.value.start, rental.value.end])
         .orWhereBetween("end", [rental.value.start, rental.value.end])
     ),
-    dbInstance("rentals").where("productId", rental.value.productId).andWhere("status", 1).whereRaw("rentals.productId = products.id")
+    dbInstance("rentals").where("productId", rental.value.productId).andWhere("status", 1).where("rentals.productId", rental.value.productId)
       .andWhere("rentals.status", 1).andWhere(
       (qB) => qB
         .whereBetween("start", [rental.value.start, rental.value.end])
@@ -145,12 +145,12 @@ module.exports.createRental = attachDb(async (event, context) => {
 
   // check if the rentals collide with the availabilities and if the rentals collide with other rentals
   const [collidingAvailabilities, collidingRentals] = await Promise.all([
-    dbInstance("products_availability").where("productId", rentalInput.productId).whereRaw("products_availability.productId = products.id").andWhere(
+    dbInstance("products_availability").where("productId", rentalInput.productId).where("products_availability.productId", product.value.id).andWhere(
       (qB) => qB
         .whereBetween("start", [rentalInput.start, rentalInput.end])
         .orWhereBetween("end", [rentalInput.start, rentalInput.end])
     ),
-    dbInstance("rentals").where("productId", rentalInput.productId).andWhere("status", 1).whereRaw("rentals.productId = products.id")
+    dbInstance("rentals").where("productId", rentalInput.productId).andWhere("status", 1).where("rentals.productId", product.value.id)
       .andWhere("rentals.status", 1).andWhere(
       (qB) => qB
         .whereBetween("start", [rentalInput.start, rentalInput.end])
