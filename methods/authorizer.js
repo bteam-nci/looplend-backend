@@ -11,9 +11,9 @@ jwIDAQAB
 -----END PUBLIC KEY-----`
 });
 
-const passthroughEndpoints = [
-	"/GET/products",
-	"/GET/products/*",
+const passthroughPatterns = [
+	/\/dev\/GET\/products\/[a-f0-9-]{36}$/,
+	/\/dev\/GET\/products$/
 ]
 // Authorizer function
 module.exports.handler = async (event) => {
@@ -26,7 +26,7 @@ module.exports.handler = async (event) => {
 		// Return the policy document for API Gateway to allow access
 		return generatePolicy(sub, "Allow", event.methodArn, { userId:sub });
 	} catch (error) {
-		if (passthroughEndpoints.some(e=> event.methodArn.endsWith(e))){
+		if (passthroughPatterns.some((pattern) => pattern.test(event.methodArn))) {
 			return generatePolicy(null, "Allow", event.methodArn);
 		}
 		console.error(error);
