@@ -13,6 +13,7 @@ jwIDAQAB
 
 const passthroughEndpoints = [
 	"/GET/products",
+	"/GET/products/*",
 ]
 // Authorizer function
 module.exports.handler = async (event) => {

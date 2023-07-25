@@ -14,7 +14,7 @@ if status is 2, then the rental is past
 function getStatus(rental){
 	if (rental.status === 0) return "PENDING";
 	if (rental.status === 2) return "DENIED";
-	if (new Date(rental.start) > new Date()) return "UPCOMING";
+	if (new Date(rental.start) >= new Date()) return "UPCOMING";
 	if (new Date(rental.end) < new Date()) return "COMPLETED";
 	return "ONGOING";
 }

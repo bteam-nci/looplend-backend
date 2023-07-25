@@ -1,6 +1,6 @@
 const PAGE_LIMIT = 20;
 
-module.exports.get = async (productId, dbInstance) => {
+module.exports.get = async (productId, dbInstance, extendedEntity = false) => {
 	const product = await dbInstance("products")
 		.where("id", productId)
 		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
@@ -12,6 +12,10 @@ module.exports.get = async (productId, dbInstance) => {
 	}
 	product.owner = await dbInstance("users").where("id", product.ownerId).first();
 	product.availabilities = await dbInstance("products_availability").where("productId", productId);
+	if(extendedEntity){
+		product.feedback = await dbInstance("product_feedbacks").where("productId", productId);
+		product.owner.feedback = await dbInstance("user_feedbacks").where("userId", product.ownerId);
+	}
 	return {
 		value: {
 			...product,

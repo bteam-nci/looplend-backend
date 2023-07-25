@@ -1,3 +1,14 @@
+getProduct:
+  handler: methods/products.getProduct
+  events:
+    - http:
+        path: /products/{pID}
+        cors: true
+        method: get
+        authorizer:
+          name: authorizer
+          resultTtlInSeconds: 0
+          type: request
 createProduct:
   handler: methods/products.createProduct
   events:

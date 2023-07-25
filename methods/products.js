@@ -49,6 +49,20 @@ module.exports.deleteProduct = attachDb(async (event, context) => {
 	})
 });
 
+module.exports.getProduct = attachDb(async (event, context) => {
+	const dbInstance = context.dbInstance;
+	const {extendedEntity} = event.queryStringParameters ?? {};
+
+	const product = await products.get(event.pathParameters.pID, dbInstance, extendedEntity);
+
+	if(!product){
+		return apigHelper.error({
+			"message": "Product not found"
+		}, 404);
+	}
+	return apigHelper.returnEntity(product);
+});
+
 module.exports.editProduct = attachDb(async (event, context) => {
 	const userId = apigHelper.getUserId(event);
 	const dbInstance = context.dbInstance;
