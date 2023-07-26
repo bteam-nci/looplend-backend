@@ -3,7 +3,7 @@ const PAGE_LIMIT = 20;
 module.exports.get = async (params, dbInstance) => {
 	const {productId, extendedEntity, userId} = params;
 	const query = dbInstance("products")
-		.where("id", productId)
+		.where("products.id", productId)
 		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
 		.groupBy("products.id")
 		.first();
