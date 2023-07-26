@@ -1,24 +1,36 @@
 const PAGE_LIMIT = 20;
 
-module.exports.get = async (productId, dbInstance, extendedEntity = false) => {
-	const product = await dbInstance("products")
+module.exports.get = async (params, dbInstance) => {
+	const {productId, extendedEntity, userId} = params;
+	const query = dbInstance("products")
 		.where("id", productId)
 		.leftJoin("product_feedbacks", "product_feedbacks.productId", "products.id")
 		.groupBy("products.id")
-		.select("products.*", dbInstance.raw(`case when avg("product_feedbacks"."rating") is null then 0 else avg("product_feedbacks"."rating") end as productRating`))
 		.first();
+	let selectParts = ["products.*", dbInstance.raw(`case when avg("product_feedbacks"."rating") is null then 0 else avg("product_feedbacks"."rating") end as productRating`)];
+
+	if (userId) {
+		selectParts.push(dbInstance.raw(`(
+    select count(*)
+        from "users_wishlists"
+        where "users_wishlists"."productId" = "products"."id" and "users_wishlists"."userId" = ?
+    ) as wishlistCount`, [userId]));
+	}
+	const product = await query.clone()
+		.select(selectParts);
 	if (!product) {
 		return null;
 	}
 	product.owner = await dbInstance("users").where("id", product.ownerId).first();
 	product.availabilities = await dbInstance("products_availability").where("productId", productId);
 	if(extendedEntity){
-		product.feedback = await dbInstance("product_feedbacks").where("productId", productId);
-		product.owner.feedback = await dbInstance("user_feedbacks").where("userId", product.ownerId);
+		product.feedbacks = await dbInstance("product_feedbacks").select("users.fullName","product_feedbacks.*").where("productId", productId).innerJoin("users", "users.id", "product_feedbacks.reviewerId");
+		product.owner.feedbacks = await dbInstance("user_feedbacks").select("users.fullName","user_feedbacks.*").where("userId", product.ownerId).innerJoin("users", "users.id", "user_feedbacks.reviewerId");
 	}
 	return {
 		value: {
 			...product,
+			productrating: undefined,
 			rating: parseFloat(product.productrating).toFixed(1),
 		},
 		_type: "Product"
