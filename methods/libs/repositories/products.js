@@ -24,8 +24,8 @@ module.exports.get = async (params, dbInstance) => {
 	product.owner = await dbInstance("users").where("id", product.ownerId).first();
 	product.availabilities = await dbInstance("products_availability").where("productId", productId);
 	if(extendedEntity){
-		product.feedbacks = await dbInstance("product_feedbacks").select("users.fullName","product_feedbacks.*").where("productId", productId).innerJoin("users", "users.id", "product_feedbacks.reviewerId");
-		product.owner.feedbacks = await dbInstance("user_feedbacks").select("users.fullName","user_feedbacks.*").where("userId", product.ownerId).innerJoin("users", "users.id", "user_feedbacks.reviewerId");
+		product.feedbacks = await dbInstance("product_feedbacks").select("users.fullName","product_feedbacks.*").where("productId", productId).innerJoin("users", "users.id", "product_feedbacks.reviewerId").orderBy("createdAt", "desc");
+		product.owner.feedbacks = await dbInstance("user_feedbacks").select("users.fullName","user_feedbacks.*").where("userId", product.ownerId).innerJoin("users", "users.id", "user_feedbacks.reviewerId").orderBy("createdAt", "desc");
 	}
 	return {
 		value: {
