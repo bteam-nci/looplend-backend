@@ -29,8 +29,7 @@ module.exports.createProduct = attachDb(async (event, context) => {
 module.exports.deleteProduct = attachDb(async (event, context) => {
 	const userId = apigHelper.getUserId(event);
 	const dbInstance = context.dbInstance;
-
-	const product = await products.get(event.pathParameters.pID, dbInstance);
+	const product = await products.get({productId: event.pathParameters.pID}, dbInstance);
 
 	if(!product){
 		return apigHelper.error({
@@ -50,10 +49,11 @@ module.exports.deleteProduct = attachDb(async (event, context) => {
 });
 
 module.exports.getProduct = attachDb(async (event, context) => {
+	const userId = apigHelper.getUserId(event);
 	const dbInstance = context.dbInstance;
 	const {extendedEntity} = event.queryStringParameters ?? {};
 
-	const product = await products.get(event.pathParameters.pID, dbInstance, extendedEntity);
+	const product = await products.get({productId: event.pathParameters.pID, extendedEntity, userId}, dbInstance, );
 
 	if(!product){
 		return apigHelper.error({
@@ -74,7 +74,7 @@ module.exports.editProduct = attachDb(async (event, context) => {
 			"message": "Invalid product"
 		});
 	}
-	const product = await products.get(event.pathParameters.pID, dbInstance);
+	const product = await products.get({productId: event.pathParameters.pID}, dbInstance);
 
 	if(!product){
 		return apigHelper.error({

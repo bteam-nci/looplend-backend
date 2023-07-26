@@ -129,7 +129,7 @@ module.exports.createRental = attachDb(async (event, context) => {
     });
   }
 
-  const product = await products.get(rentalInput.productId, dbInstance);
+  const product = await products.get({productId: rentalInput.productId}, dbInstance);
 
   if(!product){
     return apigHelper.error({

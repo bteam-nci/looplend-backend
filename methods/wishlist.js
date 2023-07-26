@@ -7,7 +7,7 @@ module.exports.removeProduct = attachDb(async (event, context) => {
 	const dbInstance = context.dbInstance;
 	const userId = apigHelper.getUserId(event);
 	const {pID} = event.pathParameters ?? {};
-	const product = await products.get(pID, dbInstance);
+	const product = await products.get({productId: pID}, dbInstance);
 	if (!product) {
 		return apigHelper.error({
 			"message": "Product not found"
@@ -21,7 +21,7 @@ module.exports.addProduct = attachDb(async (event, context) => {
 	const dbInstance = context.dbInstance;
 	const userId = apigHelper.getUserId(event);
 	const {pID} = event.pathParameters ?? {};
-	const product = await products.get(pID, dbInstance);
+	const product = await products.get({productId: pID}, dbInstance);
 	if (!product) {
 		return apigHelper.error({
 			"message": "Product not found"
