@@ -45,13 +45,16 @@ module.exports.create = async (product, dbInstance) => {
 	// create the product
 	const value = await dbInstance("products").insert(product).returning("*");
 	// insert the availabilities
-	const availabilities = product.availabilities.map((availability) => {
-		return {
-			...availability,
-			productId: value[0].id
-		}
-	});
-	await dbInstance("products_availability").insert(availabilities);
+	let availabilities = [];
+	if (product.availabilities) {
+		availabilities = product.availabilities.map((availability) => {
+			return {
+				...availability,
+				productId: value[0].id
+			}
+		});
+		await dbInstance("products_availability").insert(availabilities);
+	}
 	return {
 		value: {
 			...value[0],
