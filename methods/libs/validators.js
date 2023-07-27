@@ -23,7 +23,7 @@ const schemas = {
 			// it is the amount in cents
 			price: {
 				type: "integer",
-				minimum: 0
+				minimum: 1
 			},
 			availabilities: {
 				type: "array",
