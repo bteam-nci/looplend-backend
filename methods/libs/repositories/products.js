@@ -65,13 +65,8 @@ module.exports.create = async (product, dbInstance) => {
 }
 
 module.exports.edit = async (product, dbInstance) => {
-	const productOld = await dbInstance("products").where("id", product.id).first();
-	const productToUpdate = {
-		...productOld,
-		...product
-	}
 	// create the product
-	const value = await dbInstance("products").insert(productToUpdate).onConflict(["id"]).merge().returning("*");
+	const value = await dbInstance("products").update(product).where("id", product.id).returning("*");
 	// insert the availabilities
 	const availabilities = product.availabilities.map((availability) => {
 		return {
