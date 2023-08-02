@@ -132,8 +132,7 @@ module.exports.listRequests = async (userId, params, dbInstance) => {
 	const { page } = params;
 	const query = dbInstance("rentals")
 		.leftJoin("products", "products.id", "rentals.productId")
-		.where("products.ownerId", userId)
-		.andWhere("rentals.status", "=", 0);
+		.where("products.ownerId", userId);
 
 	const total = await query.clone().count("*", { as: "total" }).first();
 	const rentals = await query.clone()
