@@ -19,7 +19,7 @@ module.exports.list = async (userId, page, dbInstance) => {
 	const products = await query.clone().select("products.*", "users_wishlists.addedAt").orderBy("addedAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
 
 	return [products.map(p=>({
-		...p,
+		value: p,
 		_type: "Product"
 	})), parseInt(total.total)];
 }
