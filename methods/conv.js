@@ -27,7 +27,7 @@ module.exports.listMessages = attachDb(async (event, context) => {
 		}, 401);
 	}
 
-	const [messages, total] = await conv.list({
+	const [messages, total] = await conv.listMessages({
 		page: page ?? 1,
 		rID
 	}, userId, dbInstance);
