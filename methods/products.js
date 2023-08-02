@@ -69,7 +69,7 @@ module.exports.editProduct = attachDb(async (event, context) => {
 
 	const productInput = JSON.parse(event.body ?? "{}");
 
-	if (!validator(productInput)) {
+	if (!validator(productInput, true)) {
 		return apigHelper.badRequest({
 			"message": "Invalid product"
 		});
