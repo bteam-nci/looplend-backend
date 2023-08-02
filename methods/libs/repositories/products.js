@@ -66,7 +66,9 @@ module.exports.create = async (product, dbInstance) => {
 
 module.exports.edit = async (product, dbInstance) => {
 	// create the product
-	const value = await dbInstance("products").insert(product).onConflict(["id"]).merge().returning("*");
+	const value = await dbInstance("products").insert(product).onConflict(["id"]).merge({
+		...product,
+	}).returning("*");
 	// insert the availabilities
 	const availabilities = product.availabilities.map((availability) => {
 		return {
