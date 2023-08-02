@@ -66,7 +66,8 @@ module.exports.create = async (product, dbInstance) => {
 
 module.exports.edit = async (product, dbInstance) => {
 	// create the product
-	const value = await dbInstance("products").update(product).where("id", product.id).returning("*");
+	const prod = await dbInstance("products").update(product).where("id", product.id).returning("*");
+	const value = prod[0];
 	if (product.availabilities) {
 		// insert the availabilities
 		const availabilities = product.availabilities.map((availability) => {
@@ -78,13 +79,11 @@ module.exports.edit = async (product, dbInstance) => {
 		await Promise.all([
 			dbInstance("products_availability").where("productId", product.id).del(),
 			dbInstance("products_availability").insert(availabilities)
-		])
+		]);
+		value.availabilities = availabilities;
 	}
 	return {
-		value: {
-			...value[0],
-			availabilities
-		},
+		value,
 		_type: "Product"
 	}
 }
