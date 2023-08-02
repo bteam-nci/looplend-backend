@@ -36,7 +36,7 @@ module.exports.list = attachDb(async (event, context) => {
 	const dbInstance = context.dbInstance;
 	const {page} = event.queryStringParameters ?? {};
 
-	const [wishlist, total] = await wishlist.list(userId, page, dbInstance);
+	const [list, total] = await wishlist.list(userId, page, dbInstance);
 
-	return apigHelper.returnList(wishlist, page, total);
+	return apigHelper.returnList(list, page, total);
 });
