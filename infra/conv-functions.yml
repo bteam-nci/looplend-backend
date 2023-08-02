@@ -1,21 +1,21 @@
-getConversations:
-  handler: methods/conv.getConversations
-  events:
-    - http:
-        path: /conversations
-        method: get
-        cors: true
-        authorizer:
-          name: authorizer
-          resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
-          type: request
+#getConversations:
+#  handler: methods/conv.getConversations
+#  events:
+#    - http:
+#        path: /conversations
+#        method: get
+#        cors: true
+#        authorizer:
+#          name: authorizer
+#          resultTtlInSeconds: 0
+#          identitySource: method.request.header.Authorization
+#          type: request
 
 getConversationMessages:
-  handler: methods/conv.getConversationMessages
+  handler: methods/conv.listMessages
   events:
     - http:
-        path: /conversations/{cID}/messages
+        path: /conversations/{rID}/messages
         method: get
         cors: true
         authorizer:
@@ -25,10 +25,10 @@ getConversationMessages:
           type: request
 
 sendConversationMessage:
-  handler: methods/conv.sendConversationMessage
+  handler: methods/conv.sendMessage
   events:
     - http:
-        path: /conversations/{cID}/messages
+        path: /conversations/{rID}/messages
         method: post
         cors: true
         authorizer:

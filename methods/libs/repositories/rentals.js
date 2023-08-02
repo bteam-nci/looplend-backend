@@ -39,7 +39,6 @@ module.exports.get = async (rentalId, dbInstance) => {
 		_type: "Rental"
 	}
 }
-
 module.exports.create = async (rentalInput, dbInstance) => {
 	// create the rental
 	const [rental] = await dbInstance("rentals").insert(rentalInput).returning("*");
