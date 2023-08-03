@@ -44,19 +44,7 @@ deleteProduct:
           name: authorizer
           resultTtlInSeconds: 0
           type: request
-#
-#sendProductFeedback:
-#  handler: handler.sendProductFeedback
-#  events:
-#    - http:
-#        path: /products/{pID}/feedbacks
-#        method: post
-#        authorizer:
-#          name: authorizer
-#          resultTtlInSeconds: 0
-#          identitySource: method.request.header.Authorization
-#          type: request
-#
+
 listProducts:
   handler: methods/products.listProducts
   events:

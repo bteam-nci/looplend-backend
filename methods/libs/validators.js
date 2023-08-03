@@ -105,7 +105,37 @@ const schemas = {
 			},
 		},
 		required: ["productId", "start", "end"]
-	}
+	},
+	"feedback": {
+		type: "object",
+		oneOf:[
+			{
+				properties:{
+					productId: {
+						type: "string"
+					},
+				}
+			},
+			{
+				properties:{
+					userId: {
+						type: "string"
+					},
+				}
+			}
+		],
+		properties: {
+			text: {
+				type: "string"
+			},
+			rating: {
+				type: "integer",
+				minimum: 1,
+				maximum: 5
+			},
+		},
+		required: ["text", "rating"]
+	},
 }
 module.exports.product =  (product, edit) => {
 	if (edit) {
@@ -115,4 +145,7 @@ module.exports.product =  (product, edit) => {
 }
 module.exports.rental =  (rental) => {
 	return validate(rental, schemas.rental).valid;
+}
+module.exports.feedback =  (feedback) => {
+	return validate(feedback, schemas.feedback).valid;
 }

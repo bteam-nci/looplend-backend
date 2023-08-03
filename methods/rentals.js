@@ -1,6 +1,6 @@
 const attachDb = require("./libs/db");
 const apigHelper = require("./libs/apigHelper");
-const {rental: validator} = require("./libs/validators");
+const {rental: validator, feedback: feedbackValidator} = require("./libs/validators");
 const rentals = require("./libs/repositories/rentals");
 const products = require("./libs/repositories/products");
 
@@ -173,6 +173,50 @@ module.exports.createRental = attachDb(async (event, context) => {
   }
 
   const rental = await rentals.create(baseRental, dbInstance);
+
+  return apigHelper.returnEntity(rental);
+});
+
+module.exports.sendProductFeedback = attachDb(async (event, context) => {
+  const userId = apigHelper.getUserId(event);
+  const {rID} = event.pathParameters ?? {};
+  const dbInstance = context.dbInstance;
+
+  const feedbackInput = JSON.parse(event.body ?? "{}");
+
+  if (!feedbackValidator(feedbackInput)) {
+    return apigHelper.badRequest({
+      "message": "Invalid feedback"
+    });
+  }
+  let rental = await rentals.get(rID, dbInstance);
+  if (!rental) {
+    return apigHelper.error({
+      message: "Rental not found"
+    }, 404);
+  }
+  if (rental.value.status !== "COMPLETED") {
+    return apigHelper.error({
+      message: "Rental is not completed"
+    }, 400);
+  }
+  if (rental.value.product.borrowerId !== userId) {
+    return apigHelper.error({
+      message: "User is not the borrower"
+    }, 403);
+  }
+
+  const feedback = await rentals.sendProductFeedback({
+    ...feedbackInput,
+    rentalId: rID,
+    reviewerId: userId
+  }, dbInstance);
+  if (!feedback) {
+    return apigHelper.error({
+      message: "Feedback already sent"
+    }, 400);
+  }
+  rental = await rentals.get(rID, dbInstance);
 
   return apigHelper.returnEntity(rental);
 });

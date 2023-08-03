@@ -39,6 +39,7 @@ module.exports.get = async (rentalId, dbInstance) => {
 		_type: "Rental"
 	}
 }
+
 module.exports.create = async (rentalInput, dbInstance) => {
 	// create the rental
 	const [rental] = await dbInstance("rentals").insert(rentalInput).returning("*");
@@ -65,6 +66,14 @@ module.exports.accept = async (rentalId, dbInstance) => {
 	return dbInstance("rentals").where("id", rentalId).update({
 		status: 1
 	});
+}
+
+module.exports.sendProductFeedback = async (params, dbInstance) => {
+	const rentalProductFeedback = await dbInstance("product_feedbacks").where("rentalId", params.rentalId).first();
+	if (rentalProductFeedback) {
+		return null;
+	}
+	return dbInstance("product_feedbacks").insert(params).returning("*");
 }
 
 module.exports.list = async (userId, params, dbInstance) => {

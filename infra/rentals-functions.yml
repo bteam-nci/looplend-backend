@@ -57,3 +57,15 @@ denyRental:
           name: authorizer
           resultTtlInSeconds: 0
           type: request
+
+sendProductFeedback:
+  handler: handler.sendProductFeedback
+  events:
+    - http:
+        path: /rentals/{rID}/product/feedbacks
+        method: post
+        cors: true
+        authorizer:
+          name: authorizer
+          resultTtlInSeconds: 0
+          type: request

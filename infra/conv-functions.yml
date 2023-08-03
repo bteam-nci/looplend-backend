@@ -21,7 +21,6 @@ getConversationMessages:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
 
 sendConversationMessage:
@@ -34,5 +33,4 @@ sendConversationMessage:
         authorizer:
           name: authorizer
           resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
           type: request
