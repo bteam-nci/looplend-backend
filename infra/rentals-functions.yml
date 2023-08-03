@@ -59,7 +59,7 @@ denyRental:
           type: request
 
 sendProductFeedback:
-  handler: handler.sendProductFeedback
+  handler: methods/rentals.sendProductFeedback
   events:
     - http:
         path: /rentals/{rID}/product/feedbacks
