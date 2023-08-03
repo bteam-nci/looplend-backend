@@ -1,18 +1,5 @@
 const PAGE_LIMIT = 25;
 
-module.exports.list = async (rentalId, dbInstance) => {
-	const {page, rID} = params;
-	const query = dbInstance("conversation_messages").where("rentalId", rID);
-	const total = await query.clone().count("*", {as: "total"}).first();
-
-	const products = await query.clone().orderBy("createdAt", "desc").limit(PAGE_LIMIT).offset((page - 1) * PAGE_LIMIT);
-
-	return [products.map(p => ({
-		value: p,
-		_type: "Product"
-	})), parseInt(total.total)];
-}
-
 module.exports.listMessages = async (params, dbInstance) => {
 	const {page, rID} = params;
 	const query = dbInstance("conversation_messages").where("rentalId", rID);
@@ -22,12 +9,19 @@ module.exports.listMessages = async (params, dbInstance) => {
 
 	return [messages.map(p => ({
 		value: p,
-		_type: "message"
+		_type: "Message"
 	})), parseInt(total.total)];
 }
 
-module.exports.add = async (rentalId, dbInstance) => {
-	return dbInstance("rentals").where("id", rentalId).update({
-		status: 2
-	});
+module.exports.sendMessage = async (params, dbInstance) => {
+	const {text, rID, userId} = params;
+	const message = await dbInstance("conversation_messages").insert({
+		rentalId: rID,
+		senderId: userId,
+		text
+	}).returning("*");
+	return {
+		value: message[0],
+		_type: "Message"
+	};
 }
