@@ -208,6 +208,7 @@ module.exports.sendProductFeedback = attachDb(async (event, context) => {
 
   const feedback = await rentals.sendProductFeedback({
     ...feedbackInput,
+    productId: rental.value.product.id,
     rentalId: rID,
     reviewerId: userId
   }, dbInstance);

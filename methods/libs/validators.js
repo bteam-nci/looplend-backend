@@ -108,22 +108,6 @@ const schemas = {
 	},
 	"feedback": {
 		type: "object",
-		oneOf:[
-			{
-				properties:{
-					productId: {
-						type: "string"
-					},
-				}
-			},
-			{
-				properties:{
-					userId: {
-						type: "string"
-					},
-				}
-			}
-		],
 		properties: {
 			text: {
 				type: "string"
