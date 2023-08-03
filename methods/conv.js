@@ -29,8 +29,9 @@ module.exports.listMessages = attachDb(async (event, context) => {
 
 	const [messages, total] = await conv.listMessages({
 		page: page ?? 1,
-		rID
-	}, userId, dbInstance);
+		rID,
+		userId
+	}, dbInstance);
 
 	return apigHelper.returnList(messages, page, total);
 });
