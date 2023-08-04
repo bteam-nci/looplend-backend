@@ -75,6 +75,13 @@ module.exports.sendProductFeedback = async (params, dbInstance) => {
 	}
 	return dbInstance("product_feedbacks").insert(params).returning("*");
 }
+module.exports.sendUserFeedback = async (params, dbInstance) => {
+	const rentalProductFeedback = await dbInstance("user_feedbacks").where("rentalId", params.rentalId).first();
+	if (rentalProductFeedback) {
+		return null;
+	}
+	return dbInstance("user_feedbacks").insert(params).returning("*");
+}
 
 module.exports.list = async (userId, params, dbInstance) => {
 	const { page, status } = params;

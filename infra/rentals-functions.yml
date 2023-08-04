@@ -69,3 +69,15 @@ sendProductFeedback:
           name: authorizer
           resultTtlInSeconds: 0
           type: request
+
+sendUserFeedback:
+  handler: methods/rentals.sendUserFeedback
+  events:
+    - http:
+        path: /rentals/{rID}/owner/feedbacks
+        method: post
+        cors: true
+        authorizer:
+          name: authorizer
+          resultTtlInSeconds: 0
+          type: request
