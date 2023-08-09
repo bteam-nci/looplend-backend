@@ -21,7 +21,7 @@ module.exports.listMessages = attachDb(async (event, context) => {
 			"message": "Rental not found"
 		}, 404);
 	}
-	if (rental.value.ownerId !== userId && rental.value.borrowerId !== userId) {
+	if (rental.value.product.ownerId !== userId && rental.value.borrowerId !== userId) {
 		return apigHelper.error({
 			"message": "Not authorized to view this rental"
 		}, 401);
@@ -47,7 +47,7 @@ module.exports.sendMessage = attachDb(async (event, context) => {
 			"message": "Rental not found"
 		}, 404);
 	}
-	if (rental.value.ownerId !== userId && rental.value.borrowerId !== userId) {
+	if (rental.value.product.ownerId !== userId && rental.value.borrowerId !== userId) {
 		return apigHelper.error({
 			"message": "Not authorized to view this rental"
 		}, 401);
