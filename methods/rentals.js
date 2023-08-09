@@ -41,7 +41,7 @@ module.exports.acceptRental = attachDb(async (event, context) => {
     }, 404);
   }
   rental.value.belongsToUser = rental.value.borrowerId === userId;
-  if(rental.value.belongsToUser && rental.value.product.borrowerId !== userId){
+  if(rental.value.belongsToUser && rental.value.borrowerId !== userId){
     return apigHelper.error({
       message: "This user can not accept this rental request"
     }, 403);
@@ -90,7 +90,7 @@ module.exports.denyRental = attachDb(async (event, context) => {
   }
   rental.value.belongsToUser = rental.value.borrowerId === userId;
 
-  if(rental.value.belongsToUser && rental.value.product.borrowerId !== userId){
+  if(rental.value.belongsToUser && rental.value.borrowerId !== userId){
     return apigHelper.error({
       message: "This user can not accept this rental request"
     }, 403);
@@ -200,7 +200,7 @@ module.exports.sendProductFeedback = attachDb(async (event, context) => {
       message: "Rental is not completed"
     }, 400);
   }
-  if (rental.value.product.borrowerId !== userId) {
+  if (rental.value.borrowerId !== userId) {
     return apigHelper.error({
       message: "User is not the borrower"
     }, 403);
