@@ -25,19 +25,16 @@ module.exports.get = async (rentalId, dbInstance) => {
 	if (!rental) {
 		return null;
 	}
-
+	rental.product = await dbInstance("products")
+		.where("id", rental.productId).first();
 	const decorations = await Promise.all([
-		dbInstance("products")
-			.where("id", rental.productId).first(),
 		dbInstance("users")
 			.where("id", rental.borrowerId).first(),
 		dbInstance("users")
 			.where("id", rental.product.ownerId).first()
 	]);
-
-	rental.product = decorations[0];
-	rental.borrower = decorations[1];
-	rental.owner = decorations[2];
+	rental.borrower = decorations[0];
+	rental.owner = decorations[1];
 
 	rental.status = getStatus(rental);
 
