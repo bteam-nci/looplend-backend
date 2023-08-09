@@ -80,8 +80,8 @@ module.exports.sendProductFeedback = async (params, dbInstance) => {
 	return dbInstance("product_feedbacks").insert(params).returning("*");
 }
 module.exports.sendUserFeedback = async (params, dbInstance) => {
-	const rentalProductFeedback = await dbInstance("user_feedbacks").where("rentalId", params.rentalId).first();
-	if (rentalProductFeedback) {
+	const rentalUserFeedback = await dbInstance("user_feedbacks").where("rentalId", params.rentalId).first();
+	if (rentalUserFeedback) {
 		return null;
 	}
 	return dbInstance("user_feedbacks").insert(params).returning("*");
